@@ -1,8 +1,8 @@
 const { Router } = require('express')
 const fs = require('fs')
+let carrito = require('./carrito.json')
 
 const router = Router()
-let carrito = []
 
 idCartGenerator = () =>{
     const count = carrito.length

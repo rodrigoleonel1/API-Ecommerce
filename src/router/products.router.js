@@ -1,8 +1,8 @@
 const { Router } = require('express')
 const fs = require('fs')
+let products = require('./products.json')
 
 const router = Router()
-let products = []
 
 idProductGenerator = () =>{
     const count = products.length
