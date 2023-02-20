@@ -1,16 +1,5 @@
 [
   {
-    "title": "Samsung Galaxy A03",
-    "description": "Descripción Samsung Galaxy A03",
-    "code": "234",
-    "price": 100,
-    "status": true,
-    "stock": 9,
-    "category": "Phone",
-    "thumbnail": "Samsung-Galaxy-A03.jpg",
-    "id": 1
-  },
-  {
     "title": "Iphone 13",
     "description": "Descripción Iphone 13",
     "code": "1",
@@ -20,5 +9,16 @@
     "category": "Phone",
     "thumbnail": "iphone-13.jpg",
     "id": 2
+  },
+  {
+    "title": "Xiaomi Redmi Note 11",
+    "description": "Descripción Xiaomi Redmi Note 11",
+    "code": "X17",
+    "price": 1500,
+    "status": true,
+    "stock": 19,
+    "category": "Phone",
+    "thumbnail": "xiaomi-redmi-note-11.jpg",
+    "id": 5
   }
 ]
