@@ -1,20 +1,12 @@
-const { Router } = require('express')
-const fs = require('fs')
-let carrito = require('./carrito.json')
+import { Router } from 'express'
+import fs from 'fs'
+import carrito from './carrito.json' assert { type: "json" }
+import idGenerator from '../controllers/idgenerator.js'
 
 const router = Router()
 
-idCartGenerator = () =>{
-    const count = carrito.length
-    if (count === 0){
-        return 1
-    } else {
-        return (carrito[count-1].id) + 1     
-    }
-}
-
 router.post('/', (req, res) =>{
-    const id = idCartGenerator()
+    const id = idGenerator(carrito)
     carrito.push( { 
         id: id,
         products: []
@@ -57,4 +49,4 @@ router.post('/:cid/product/:pid', (req, res) =>{
 })
 
 
-module.exports = router
+export default router

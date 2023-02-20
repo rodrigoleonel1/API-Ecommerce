@@ -1,17 +1,9 @@
-const { Router } = require('express')
-const fs = require('fs')
-let products = require('./products.json')
+import  { Router } from 'express'
+import fs from 'fs'
+import products from './products.json' assert { type: "json" }
+import idGenerator from '../controllers/idgenerator.js'
 
 const router = Router()
-
-idProductGenerator = () =>{
-    const count = products.length
-    if (count === 0){
-        return 1
-    } else {
-        return (products[count-1].id) + 1     
-    }
-}
 
 router.get('/', (req, res) =>{
     let limit = req.query.limit
@@ -36,7 +28,7 @@ router.get('/:pid', (req, res) =>{
 })
 
 router.post('/', (req, res) =>{
-    const id = idProductGenerator()
+    const id = idGenerator(products)
     if( !req.body.title || !req.body.description || !req.body.code || !req.body.price || !req.body.status || !req.body.stock || !req.body.category ){
         res.status(400).json({ status: "error", message: 'Product not complete'})
     }else if (products.find(e => e.code === req.body.code)){
@@ -66,14 +58,15 @@ router.put('/:pid', (req, res) =>{
 
 router.delete('/:pid', (req, res) =>{
     const { pid } = req.params
-    const currentLength = products.length
-    products = products.filter( p => p.id != pid )
-    if( products.length == currentLength ){
+    const product = products.find( product => product.id.toString() === pid)
+    if( product === undefined ){
         res.status(400).json({ status: "error", message: "Product not found"})
     } else{
+        const productIndex = products.indexOf(product)
+        products.splice(productIndex, 1)
         res.status(200).json({ status: "success", message: "Product deleted" })
         fs.writeFileSync('./src/router/products.json', JSON.stringify(products, null, 2))
     }
 })
 
-module.exports = router
+export default router
