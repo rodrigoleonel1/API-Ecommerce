@@ -1,9 +1,10 @@
 import express from "express"
-import products from './products.json' assert { type: "json" }
+import productsModel from "../dao/models/products.models.js"
 
 const router = express.Router()
 
-router.get('/', (req, res) =>{
+router.get('/', async (req, res) =>{
+    const products = await productsModel.find().lean().exec()
     res.render('home', {
         title: 'Products',
         products

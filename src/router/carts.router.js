@@ -1,52 +1,21 @@
 import { Router } from 'express'
-import fs from 'fs'
-import carrito from './carrito.json' assert { type: "json" }
-import idGenerator from '../controllers/idgenerator.js'
+import { createCart, getCart, addToCart, deleteCartProduct, updateCartProducts, updateProductQuantity, deleteCartProducts } from '../controllers/cartsController.js'
 
 const router = Router()
 
-router.post('/', (req, res) =>{
-    const id = idGenerator(carrito)
-    carrito.push( { 
-        id: id,
-        products: []
-    } )
-    res.status(201).json({status: "success", message: "Cart created"})
-    fs.writeFileSync('./src/router/carrito.json', JSON.stringify(carrito, null, 2))
-})
+router.post('/', createCart)
 
-router.get('/:cid', (req, res) =>{
-    const { cid } = req.params
-    const cart = carrito.find( cart => cart.id.toString() === cid)
-    if (!cart){
-        res.status(400).json({ status: "error", message: 'Cart not found'})
-    } else {
-        res.status(200).json({cart})
-    }
-})
+router.get('/:cid', getCart)
 
+router.post('/:cid/product/:pid', addToCart)
 
-router.post('/:cid/product/:pid', (req, res) =>{
-    const { cid, pid } = req.params
-    const cart = carrito.find( cart => cart.id.toString() === cid)
-    const product = cart.products.find( p => p.product == pid)
-    if (!cart){
-        res.status(400).json({ status: "error", message: 'Cart not found'})
-    } else {
-        if(!product){
-            cart.products.push({
-                product: pid,
-                quantity: 1
-            })
-            res.status(200).json({ status: "success", message: 'Product added'})
-            fs.writeFileSync('./src/router/carrito.json', JSON.stringify(carrito, null, 2))
-        } else {
-            product.quantity++
-            res.status(200).json({ status: "success", message: 'Quantity updated'})
-            fs.writeFileSync('./src/router/carrito.json', JSON.stringify(carrito, null, 2))
-        }
-    }
-})
+router.delete('/:cid/products/:pid', deleteCartProduct)
+
+router.put('/:cid', updateCartProducts)
+
+router.put('/:cid/products/:pid', updateProductQuantity)
+
+router.delete('/:cid', deleteCartProducts)
 
 
 export default router

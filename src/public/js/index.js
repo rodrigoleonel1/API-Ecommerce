@@ -10,10 +10,10 @@ socket.on('productos', data =>{
         <li>${product.title}</li>
         <li>${product.description}</li>
         <li>Código del producto: ${product.code}</li>
-        <li>Precio: ${product.price}</li>
+        <li>Precio: $${product.price}</li>
         <li>Status: ${product.status}</li>
         <li>Categoria: ${product.category}</li>
-        <li>ID del producto: ${product.id}</li>
+        <li>ID del producto: ${product._id}</li>
     `
         divProducts.appendChild(productList)
     })
