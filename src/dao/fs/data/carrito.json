@@ -1,0 +1,23 @@
+[
+  {
+    "_id": "641f9126b765a81f4f97806d",
+    "products": [
+      {
+        "product": {
+          "_id": "641f92ebb295db3385cc4c21",
+          "title": "Apple iPhone 14 Pro Max",
+          "description": "El iPhone 14 Pro Max te permite captar detalles increíbles gracias a su cámara gran angular de 48 MP. Además, trae la Dynamic Island y una pantalla siempre activa, para que puedas interactuar con tu iPhone de una forma completamente nueva. Y viene con Detección de Choques(1), una funcionalidad de seguridad que pide ayuda cuando no estás en condiciones de hacerlo.",
+          "code": "aa000",
+          "price": 711.999,
+          "status": true,
+          "stock": 3,
+          "category": "iphone",
+          "thumbnail": "https://http2.mlstatic.com/D_NQ_NP_873385-MLM51559384419_092022-O.webp",
+          "__v": 0
+        },
+        "quantity": 1
+      }
+    ],
+    "__v": 0
+  }
+]

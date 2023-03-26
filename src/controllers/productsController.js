@@ -1,25 +1,23 @@
-import fs from 'fs'
-import productsModel from '../dao/models/products.models.js'
+import productModel from '../dao/models/products.model.js'
+import { saveFsData, productsPath } from '../dao/fs/helpers/saveFsData.js'
 
+// GET/api/products
 const getProducts = async (req, res) =>{
-    let page = parseInt(req.query.page)
-    if(!page) page = 1
 
-    let limit = parseInt(req.query.limit)
-    if(!limit) limit = 10
+    const limit = req.query?.limit || 10
+    const page = req.query?.page || 1
+
+    let query = {}
+    if(req.query.category || req.query.status) query = req.query
 
     let sort = req.query.sort
     let sortBy = null
     if(sort === 'desc') sortBy = {price: -1}
     if(sort === 'asc') sortBy = {price: 1}
-
-    let query = {}
-    if(req.query.category || req.query.status) query = req.query
-
-    const products = await productsModel.paginate(query, { page, limit, sort: sortBy, lean: true})
-    products.prevLink = products.hasPrevPage ? `http://localhost:8080/api/products?page=${products.prevPage}` : ''
-    products.nextLink = products.hasNextPage ? `http://localhost:8080/api/products?page=${products.nextPage}` : ''
-
+    
+    const products = await productModel.paginate(query, { page, limit, sort: sortBy, lean: true})
+    products.prevLink = products.hasPrevPage ? `http://localhost:8080/api/products?page=${products.prevPage}&limit=${limit}&sort=${sort}` : ''
+    products.nextLink = products.hasNextPage ? `http://localhost:8080/api/products?page=${products.nextPage}&limit=${limit}&sort=${sort}` : ''
 
     if(products.totalDocs === 0){
         res.status(200).json( { status: 'error', products })
@@ -28,70 +26,84 @@ const getProducts = async (req, res) =>{
     }
 }
 
+// GET/api/products/:pid
 const getProductById = async (req, res) =>{
-    const { pid } = req.params
-    if (pid.match(/^[0-9a-fA-F]{24}$/)) {
-        const product = await productsModel.findOne({_id: pid}).lean().exec()
-        if (!product){
-            res.status(400).json({ status: "error", message: 'Product not found'})
-        } else {
-            res.status(200).json(product)
-        }
-    } else {
-        res.status(400).json({ status: "error", message: 'ID does not have a valid format'})   
+    const pid = req.params.pid
+    const product = await productModel.findOne({_id: pid})
+    if (!product){
+        return res.status(400).json({ status: "error", message: 'Product not found'})
     }
+    res.status(200).json( product )
 }
 
+// POST/api/products
 const createProduct = async (req, res) =>{
-    let products = await productsModel.find().lean().exec()
-    if( !req.body.title || !req.body.description || !req.body.code || !req.body.price || !req.body.status || !req.body.stock || !req.body.category || !req.body.thumbnail ){
-        res.status(400).json({ status: "error", message: 'Product not complete'})
-    }else if (products.find(e => e.code === req.body.code)){
-        res.status(400).json({ status: "error", message: 'Code not available'})
-    }else{
+    try {
         const newProduct = req.body
-        const productGenerated = new productsModel(newProduct)
-        await productGenerated.save()
-        res.status(201).json({status: "success", message: "Product created"})
-        products = await productsModel.find().lean().exec()
-        fs.writeFileSync('./src/data/products.json', JSON.stringify(products, null, 2))
+        let products = await productModel.find().lean().exec()
+        if( !newProduct.title || !newProduct.description || !newProduct.code || !newProduct.price || !newProduct.status || !newProduct.stock || !newProduct.category ) {
+            return res.status(400).json({ status: "error", message: 'Product not complete'})
+        }
+        if (products.find(e => e.code === newProduct.code)){
+            return res.status(400).json({ status: "error", message: 'Code not available'})
+        }
+        const productAdded = await productModel.create(newProduct)
+        res.status(201).json({status: "success", message: "Product created", productAdded})
+        saveFsData(productModel, productsPath)
+        // products = await productModel.find().lean().exec()
+        // fs.writeFileSync('./src/data/products.json', JSON.stringify(products, null, 2))
+    } catch (error) {
+        console.log(error)
+        res.status(400).json({ status: "error", message: 'Product not created'})
     }
 }
 
+// PUT/api/products/:pid
 const updateProduct = async (req, res) =>{
-    const { pid } = req.params
-    if (pid.match(/^[0-9a-fA-F]{24}$/)) {
-        const product = await productsModel.findOne({_id: pid}).lean().exec()
-        if (!product){
-            res.status(400).json({ status: "error", message: 'Product not found'})
-        } else if ( !req.body.title || !req.body.description || !req.body.code || !req.body.price || !req.body.status || !req.body.stock || !req.body.category || !req.body.thumbnail ){
-            res.status(400).json({ status: "error", message: 'Product not complete'})
-        } else{
-            await productsModel.updateOne(product, { $set: req.body})
-            res.status(200).json({ status: "success", message: "Product updated" })
-            let products = await productsModel.find().lean().exec()
-            fs.writeFileSync('./src/data/products.json', JSON.stringify(products, null, 2))
-        }
-    } else {
-        res.status(400).json({ status: "error", message: 'ID does not have a valid format'})   
+    try {
+        const pid = req.params.pid
+        const productToUpdate = req.body
+
+        if( !productToUpdate.title || !productToUpdate.description || !productToUpdate.code || !productToUpdate.price || !productToUpdate.status || !productToUpdate.stock || !productToUpdate.category ){
+            return res.status(400).json({ status: "error", message: 'Product not complete'})}
+    
+        const product = await productModel.findOneAndUpdate({ _id: pid}, productToUpdate)
+        if(product === null){
+            return res.status(400).json({ status: "error", message: 'Product not found'})
+        }        
+        saveFsData(productModel, productsPath)
+        res.status(200).json({ status: "success", message: "Product updated", productToUpdate })
+        // let products = await productModel.find().lean().exec()
+        // fs.writeFileSync('./src/data/products.json', JSON.stringify(products, null, 2))
+    } catch (error) {
+        console.log(error)
+        res.status(400).json({ status: "error", message: 'Product not updated'})
     }
 }
 
+// DELETE/api/products/:pid
 const deleteProduct = async (req, res) =>{
-    const { pid } = req.params
+    try {
+        const pid = req.params.pid
+        const productDeleted = await productModel.deleteOne({_id: pid})
 
-    if (pid.match(/^[0-9a-fA-F]{24}$/)) {
-        let product = await productsModel.findOne({_id: pid}).lean().exec()
-        if( product === null ){
-            res.status(400).json({ status: "error", message: "Product not found"})
-        } else{
-            await productsModel.deleteOne(product).lean().exec()
-            res.status(200).json({ status: "success", message: "Product deleted" })
-            let products = await productsModel.find().lean().exec()
-            fs.writeFileSync('./src/data/products.json', JSON.stringify(products, null, 2))
+        if(productDeleted.deletedCount === 0){
+            return res.status(400).json({ status: "error", message: 'Product not found'})
         }
-    } else {
-        res.status(400).json({ status: "error", message: 'ID does not have a valid format'})   
+
+        res.status(200).json({
+            status: "Success",
+            massage: "Product deleted",
+            productDeleted
+        })
+        saveFsData(productModel, productsPath)
+        // let products = await productModel.find().lean().exec()
+        // fs.writeFileSync('./src/data/products.json', JSON.stringify(products, null, 2))
+
+    } catch (error) {
+        console.log(error)
+        if (error.name === 'CastError') return res.status(400).json({ status: "error", message: 'There is no product with that ID'})
+        res.status(400).json({ status: "error", message: 'Product not created', error: error})
     }
 }
 

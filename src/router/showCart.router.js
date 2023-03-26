@@ -1,12 +1,11 @@
 import express from "express"
-import cartsModel from "../dao/models/carts.models.js"
-
+import cartModel from "../dao/models/cart.model.js"
 const router = express.Router()
 
 router.get('/:cid', async (req, res) =>{
     const { cid } = req.params
     if (cid.match(/^[0-9a-fA-F]{24}$/)) {
-        const cart = await cartsModel.findOne({_id: cid}).lean().exec()
+        const cart = await cartModel.findOne({_id: cid}).lean().exec()
         if (!cart){
             res.status(400).json({ status: "error", message: 'Cart not found'})
         } else {

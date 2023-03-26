@@ -1,5 +1,5 @@
 import express from "express"
-import productsModel from "../dao/models/products.models.js"
+import productModel from "../dao/models/products.model.js"
 
 const router = express.Router()
 
@@ -18,7 +18,7 @@ router.get('/', async (req, res) =>{
     let query = {}
     if(req.query.category || req.query.status) query = req.query
 
-    const products = await productsModel.paginate(query, { page, limit, sort: sortBy, lean: true})
+    const products = await productModel.paginate(query, { page, limit, sort: sortBy, lean: true})
     products.prevLink = products.hasPrevPage ? `http://localhost:8080/products?page=${products.prevPage}` : ''
     products.nextLink = products.hasNextPage ? `http://localhost:8080/products?page=${products.nextPage}` : ''
 
