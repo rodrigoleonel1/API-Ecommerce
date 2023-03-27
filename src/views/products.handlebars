@@ -1,6 +1,9 @@
+<div class="container d-flex flex-row align-items-center justify-content-between">
+    <h1>Bienvenido {{user.first_name}} {{user.last_name}}</h1> <div class="d-flex align-items-center gap-2">Rol: {{user.role}}<a href="http://localhost:8080/api/sessions/logout"><input class="btn btn-primary" type="button" value="Logout"></a></div>
+</div>
 <div class="container">
-    <h1>Productos</h1>
-    {{#each docs}}
+    <h2>Productos</h2>
+    {{#each products.docs}}
         <ul class="d-flex flex-row align-items-center justify-content-center gap-4">
             <div>
                 <img src="{{this.thumbnail}}" alt="{{this.title}}">
@@ -24,11 +27,11 @@
         </ul>
     {{/each}}
     <div class="d-flex flex-row align-items-center justify-content-center mb-4">
-        {{#if hasPrevPage }}
-            <a href="{{prevLink}}" class="btn btn-primary"  >Anterior</a>
+        {{#if products.hasPrevPage }}
+            <a href="{{products.prevLink}}" class="btn btn-primary" >Anterior página</a>
         {{/if}}
-        {{#if hasNextPage}}
-            <a href="{{nextLink}}" class="btn btn-primary" >Siguiente</a>
+        {{#if products.hasNextPage}}
+            <a href="{{products.nextLink}}" class="btn btn-primary">Siguiente página</a>
         {{/if}}
     </div>
 </div>

@@ -1,0 +1,11 @@
+<div class="container d-flex flex-column align-items-center">
+    <h1>Registro de usuario</h1>
+    <form class="d-flex flex-column gap-1" action="/api/sessions/register" method="post">
+        First name: <input type="text" name="first_name" placeholder="Ingrese su nombre" required ><br>
+        Last name: <input type="text" name="last_name" placeholder="Ingrese su apellido" required ><br>
+        Email: <input type="email" name="email" placeholder="Ingrese su email" required ><br>
+        Age: <input type="number" name="age" placeholder="Ingrese su edad" required ><br>
+        Password: <input type="password" name="password" placeholder="Ingrese su contraseña" required ><br>
+        <input class="btn btn-primary" type="submit" value="Crear usuario">
+    </form>
+</div>

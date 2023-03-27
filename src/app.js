@@ -3,6 +3,8 @@ import express from "express"
 import handlebars from "express-handlebars"
 import { Server } from "socket.io"
 import mongoose from "mongoose"
+import session from 'express-session'
+import MongoStore from 'connect-mongo'
 //Utils
 import __dirname from "./utils.js"
 //Routers
@@ -11,8 +13,9 @@ import cartsRouter from './router/carts.router.js'
 import homeRouter from './router/home.router.js'
 import realTimeProductsRouter from './router/realTimeProducts.router.js'
 import messagesRouter from './router/messages.router.js'
-import showProductsRouter from './router/showProducts.router.js'
-import showCartRouter from './router/showCart.router.js'
+import productsViewRouter from './router/products.view.router.js'
+import cartViewRouter from './router/cart.view.router.js'
+import sessionsRouter from './router/session.router.js'
 //Models
 import productModel from "./dao/models/products.model.js"
 import messagesModel from "./dao/models/messages.models.js"
@@ -20,6 +23,18 @@ import messagesModel from "./dao/models/messages.models.js"
 const app = express()
 const httpServer = app.listen(8080, () => console.log('Server up!'))
 const io = new Server(httpServer)
+
+//Uri mongoose
+const uri = 'mongodb+srv://ecommercecoder:ecommercecoder@ecommerce.uk3b0az.mongodb.net/ecommerce?retryWrites=true&w=majority'
+
+//Session
+app.use(session({
+    store: MongoStore.create({
+        mongoUrl: uri}),
+    secret: 'c0d3r',
+    resave: true,
+    saveUninitialized: true
+}))
 
 //Config for express
 app.use(express.json())
@@ -37,8 +52,9 @@ app.use('/api/carts', cartsRouter)
 app.use('/', homeRouter)
 app.use('/realTimeProducts', realTimeProductsRouter)
 app.use('/messages', messagesRouter)
-app.use('/products', showProductsRouter)
-app.use('/cart', showCartRouter)
+app.use('/products', productsViewRouter)
+app.use('/cart', cartViewRouter)
+app.use('/', sessionsRouter)
 
 //Socket.io
 io.on('connection', async socket =>{
@@ -57,6 +73,6 @@ io.on('connection', socket =>{
 })
 
 //Mongoose
-const uri = 'mongodb+srv://ecommercecoder:ecommercecoder@ecommerce.uk3b0az.mongodb.net/ecommerce?retryWrites=true&w=majority'
 mongoose.set('strictQuery', false)
 mongoose.connect(uri)
+
