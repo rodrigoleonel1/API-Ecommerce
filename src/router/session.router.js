@@ -1,7 +1,6 @@
 import { Router } from 'express'
 import passport from 'passport'
-import userModel from '../dao/models/user.model.js'
-import { createHash, isValidPassword } from '../utils.js'
+import { isValidPassword } from '../utils.js'
 
 const router = Router()
 
@@ -63,5 +62,15 @@ router.get('/api/sessions/logout', (req, res) =>{
         }
     })
 })
+
+router.get('/api/sessions/github', passport.authenticate('github', { scope: ['user: email']}), (req, res) =>{})
+
+router.get('/api/sessions/githubcallback', passport.authenticate('github', { failureRedirect: '/login'}), async (req, res) =>{
+    console.log('Callback: ', req.user)
+    req.session.user = {...req.user._doc, role: "usuario" }
+    console.log("User session: ", req.session.user)
+    res.redirect('/products')
+})
+
 
 export default router
