@@ -5,6 +5,8 @@ import { Server } from "socket.io"
 import mongoose from "mongoose"
 import session from 'express-session'
 import MongoStore from 'connect-mongo'
+import passport from "passport";
+import initializePassport from "./config/passport.config.js";
 //Utils
 import __dirname from "./utils.js"
 //Routers
@@ -35,6 +37,10 @@ app.use(session({
     resave: true,
     saveUninitialized: true
 }))
+
+initializePassport()
+app.use(passport.initialize())
+app.use(passport.session())
 
 //Config for express
 app.use(express.json())
