@@ -2,9 +2,15 @@ import passport from "passport";
 import local from 'passport-local'
 import userModel from "../dao/models/user.model.js";
 import GithubStrategy from 'passport-github2'
-import { createHash, isValidPassword } from "../utils.js";
+import { createHash, isValidPassword, generateToken, extractCookie } from "../utils.js";
+import passport_jwt from "passport-jwt";
+import { JWT_PRIVATE_KEY } from "./credentials.js";
+import cartModel from "../dao/models/cart.model.js";
 
 const LocalStrategy = local.Strategy
+const JWTStrategy = passport_jwt.Strategy
+const ExtractJWT = passport_jwt.ExtractJwt
+
 const initializePassport = () =>{
 
     passport.use('register', new LocalStrategy({
@@ -18,13 +24,19 @@ const initializePassport = () =>{
                 console.log('User alredy exist')
                 return done(null, false)
             }
+            const newCart = await cartModel.create({})
 
             const newUser = {
                 first_name,
                 last_name,
                 email,
                 age,
-                password: createHash(password)
+                password: createHash(password),
+                cart: newCart._id
+            }
+            
+            if(newUser.email == 'adminCoder@coder.com' && isValidPassword(newUser, 'adminCod3r123')){
+                newUser.role = 'admin'
             }
 
             const result = await userModel.create(newUser)
@@ -45,6 +57,8 @@ const initializePassport = () =>{
                 return done(null, user)
             }
             if(!isValidPassword(user, password)) return done(null, false)
+            const token = generateToken(user)
+            user.token = token
             
             return done(null, user)
         } catch (error) {
@@ -58,9 +72,10 @@ const initializePassport = () =>{
         callbackURL: 'http://localhost:8080/api/sessions/githubcallback'
     }, async (accessToken, refreshToken, profile, done) =>{
         try {
-            console.log(profile)
             const user = await userModel.findOne({ email: profile._json.email})
             if(user){
+                const token = generateToken(user)
+                user.token = token
                 return done(null, user)
             }
 
@@ -71,10 +86,20 @@ const initializePassport = () =>{
                 age: "",
                 password: ""
             })
-            return done(null, newUser)
+            let userCreated = await userModel.findOne({ email: newUser.email})
+            const token = generateToken(userCreated)
+            userCreated.token = token
+            return done(null, userCreated)
         } catch (error) {
             return console.log(error)
         }
+    }))
+
+    passport.use('jwt', new JWTStrategy({
+        jwtFromRequest: ExtractJWT.fromExtractors([extractCookie]),
+        secretOrKey: JWT_PRIVATE_KEY
+    }, async(jwt_payload, done) =>{
+        done(null, jwt_payload)
     }))
 
     passport.serializeUser((user, done) =>{

@@ -7,7 +7,12 @@ const userSchema = new mongoose.Schema({
     last_name: String,
     email: String,
     age: Number,
-    password: String
+    password: String,
+    role: {
+        type: String,
+        default: 'user'
+    },
+    cart: [{type: mongoose.Schema.Types.ObjectId, ref: 'carts'}]
 })
 
 mongoose.set("strictQuery", false)

@@ -7,8 +7,9 @@ import session from 'express-session'
 import MongoStore from 'connect-mongo'
 import passport from "passport";
 import initializePassport from "./config/passport.config.js";
+import cookieParser from "cookie-parser"
 //Utils
-import __dirname from "./utils.js"
+import __dirname, { passportCall } from "./utils.js"
 //Routers
 import productsRouter from './router/products.router.js'
 import cartsRouter from './router/carts.router.js'
@@ -31,8 +32,6 @@ const uri = 'mongodb+srv://ecommercecoder:ecommercecoder@ecommerce.uk3b0az.mongo
 
 //Session
 app.use(session({
-    store: MongoStore.create({
-        mongoUrl: uri}),
     secret: 'c0d3r',
     resave: true,
     saveUninitialized: true
@@ -45,6 +44,8 @@ app.use(passport.session())
 //Config for express
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+//Cookie parser
+app.use(cookieParser())
 //Handlebars
 app.engine('handlebars', handlebars.engine())
 app.set('views', __dirname + '/views')
@@ -58,7 +59,7 @@ app.use('/api/carts', cartsRouter)
 app.use('/', homeRouter)
 app.use('/realTimeProducts', realTimeProductsRouter)
 app.use('/messages', messagesRouter)
-app.use('/products', productsViewRouter)
+app.use('/products', passportCall('jwt'), productsViewRouter)
 app.use('/cart', cartViewRouter)
 app.use('/', sessionsRouter)
 

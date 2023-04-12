@@ -3,14 +3,7 @@ import productModel from "../dao/models/products.model.js"
 
 const router = express.Router()
 
-const auth = (req, res, next) =>{
-    if (req.session?.user) return next()
-    return res.status(401).render('errors/base', {
-        error: 'Auth error'       
-    })
-}
-
-router.get('/', auth ,async (req, res) =>{
+router.get('/',async (req, res) =>{
 
     const limit = req.query?.limit || 10
     const page = req.query?.page || 1
@@ -27,8 +20,7 @@ router.get('/', auth ,async (req, res) =>{
     products.prevLink = products.hasPrevPage ? `http://localhost:8080/products?page=${products.prevPage}&limit=${limit}&sort=${sort}` : ''
     products.nextLink = products.hasNextPage ? `http://localhost:8080/products?page=${products.nextPage}&limit=${limit}&sort=${sort}` : ''
 
-    const user = req.session.user
-
+    const user = req.user.user
 
     if(products.totalDocs === 0){
         res.render('errors/base', { error: 'Not products found' })

@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import passport from 'passport'
-import { isValidPassword } from '../utils.js'
+import { JWT_COOKIE_NAME } from '../config/credentials.js'
+import userModel from '../dao/models/user.model.js'
 
 const router = Router()
 
@@ -30,20 +31,7 @@ router.post('/api/sessions/login', passport.authenticate('login', {failureRedire
         return res.status(400).send({status: 'error', error: 'Invalid credentiales'})
     }
 
-    let role = 'usuario'
-    if(req.user.email == 'adminCoder@coder.com' && isValidPassword(req.user, 'adminCod3r123')){
-        role = 'admin'
-    }
-
-    req.session.user = {
-        first_name: req.user.first_name,
-        last_name: req.user.last_name,
-        email: req.user.email,
-        age: req.user.age,
-        role: role
-    }
-
-    res.redirect('/products')
+    res.cookie(JWT_COOKIE_NAME, req.user.token).redirect('/products')
 })
 
 router.get('/failLogin', (req, res) =>{
@@ -52,24 +40,25 @@ router.get('/failLogin', (req, res) =>{
 
 //Close session API 
 router.get('/api/sessions/logout', (req, res) =>{
-    req.session.destroy(error =>{
-        if(error) {
-            res.status(500).render('errors/base', {
-                error: error
-            })
-        } else{
-            res.redirect('/login')
-        }
-    })
+    res.clearCookie(JWT_COOKIE_NAME).redirect('/login')
 })
 
 router.get('/api/sessions/github', passport.authenticate('github', { scope: ['user: email']}), (req, res) =>{})
 
 router.get('/api/sessions/githubcallback', passport.authenticate('github', { failureRedirect: '/login'}), async (req, res) =>{
-    console.log('Callback: ', req.user)
-    req.session.user = {...req.user._doc, role: "usuario" }
-    console.log("User session: ", req.session.user)
-    res.redirect('/products')
+    res.cookie(JWT_COOKIE_NAME, req.user.token).redirect('/products')
+})
+
+router.get('/api/sessions/current', async (req, res) =>{
+    try {
+        console.log(req.user)
+        const uid = req.user._id
+        const user = await userModel.find({_id: uid}).populate('cart')
+        if (!user) return res.status(400).json({ status: "error", message: "No user logged in"})
+        res.status(200).json({user})
+    } catch (error) {
+        res.status(400).json({ status: "error", message: error.message})
+    }
 })
 
 
