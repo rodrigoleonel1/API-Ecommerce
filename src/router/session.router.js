@@ -1,65 +1,36 @@
 import { Router } from 'express'
 import passport from 'passport'
-import { JWT_COOKIE_NAME } from '../config/credentials.js'
-import userModel from '../dao/models/user.model.js'
+import { closeSession, createLogin, createLoginGithub, createSession, failLoginView, failRegisterView, getCurrentSession, getRegisterView, loginView } from '../controllers/sessionController.js'
 
 const router = Router()
 
 //Register view
-router.get('/register', (req, res) =>{
-    res.render('sessions/register')
-})
+router.get('/register', getRegisterView)
 
 //Register API
-router.post('/api/sessions/register', passport.authenticate('register', {failureRedirect: '/failRegister'}), async (req, res) =>{
-    res.redirect('/login')
-})
+router.post('/api/sessions/register', passport.authenticate('register', {failureRedirect: '/failRegister'}), createSession)
 
-router.get('/failRegister', (req, res) =>{
-    res.send({error: 'failRegister'})
-})
+//Fail register view
+router.get('/failRegister', failRegisterView)
 
 //Login view
-router.get('/login', (req, res) =>{
-    res.render('sessions/login')
-})
+router.get('/login', loginView)
 
 //Login API
-router.post('/api/sessions/login', passport.authenticate('login', {failureRedirect: '/session/failLogin'}),async (req, res) =>{
+router.post('/api/sessions/login', passport.authenticate('login', {failureRedirect: '/session/failLogin'}), createLogin)
 
-    if(!req.user){
-        return res.status(400).send({status: 'error', error: 'Invalid credentiales'})
-    }
-
-    res.cookie(JWT_COOKIE_NAME, req.user.token).redirect('/products')
-})
-
-router.get('/failLogin', (req, res) =>{
-    res.send({ error: 'Fail login '})
-})
+//Fail login view
+router.get('/session/failLogin', failLoginView)
 
 //Close session API 
-router.get('/api/sessions/logout', (req, res) =>{
-    res.clearCookie(JWT_COOKIE_NAME).redirect('/login')
-})
+router.get('/api/sessions/logout', closeSession)
 
+//Login API github
 router.get('/api/sessions/github', passport.authenticate('github', { scope: ['user: email']}), (req, res) =>{})
+router.get('/api/sessions/githubcallback', passport.authenticate('github', { failureRedirect: '/login'}), createLoginGithub)
 
-router.get('/api/sessions/githubcallback', passport.authenticate('github', { failureRedirect: '/login'}), async (req, res) =>{
-    res.cookie(JWT_COOKIE_NAME, req.user.token).redirect('/products')
-})
-
-router.get('/api/sessions/current', async (req, res) =>{
-    try {
-        console.log(req.user)
-        const uid = req.user._id
-        const user = await userModel.find({_id: uid}).populate('cart')
-        if (!user) return res.status(400).json({ status: "error", message: "No user logged in"})
-        res.status(200).json({user})
-    } catch (error) {
-        res.status(400).json({ status: "error", message: error.message})
-    }
-})
+//Current session
+router.get('/api/sessions/current', getCurrentSession)
 
 
 export default router

@@ -50,8 +50,6 @@ const createProduct = async (req, res) =>{
         const productAdded = await productModel.create(newProduct)
         res.status(201).json({status: "success", message: "Product created", productAdded})
         saveFsData(productModel, productsPath)
-        // products = await productModel.find().lean().exec()
-        // fs.writeFileSync('./src/data/products.json', JSON.stringify(products, null, 2))
     } catch (error) {
         console.log(error)
         res.status(400).json({ status: "error", message: 'Product not created'})
@@ -73,8 +71,6 @@ const updateProduct = async (req, res) =>{
         }        
         saveFsData(productModel, productsPath)
         res.status(200).json({ status: "success", message: "Product updated", productToUpdate })
-        // let products = await productModel.find().lean().exec()
-        // fs.writeFileSync('./src/data/products.json', JSON.stringify(products, null, 2))
     } catch (error) {
         console.log(error)
         res.status(400).json({ status: "error", message: 'Product not updated'})
@@ -97,9 +93,6 @@ const deleteProduct = async (req, res) =>{
             productDeleted
         })
         saveFsData(productModel, productsPath)
-        // let products = await productModel.find().lean().exec()
-        // fs.writeFileSync('./src/data/products.json', JSON.stringify(products, null, 2))
-
     } catch (error) {
         console.log(error)
         if (error.name === 'CastError') return res.status(400).json({ status: "error", message: 'There is no product with that ID'})

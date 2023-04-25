@@ -6,6 +6,7 @@ import { createHash, isValidPassword, generateToken, extractCookie } from "../ut
 import passport_jwt from "passport-jwt";
 import { JWT_PRIVATE_KEY } from "./credentials.js";
 import cartModel from "../dao/models/cart.model.js";
+import config from "./config.js";
 
 const LocalStrategy = local.Strategy
 const JWTStrategy = passport_jwt.Strategy
@@ -35,7 +36,7 @@ const initializePassport = () =>{
                 cart: newCart._id
             }
             
-            if(newUser.email == 'adminCoder@coder.com' && isValidPassword(newUser, 'adminCod3r123')){
+            if(newUser.email == config.app.adminEmail && isValidPassword(newUser, config.app.adminPassword)){
                 newUser.role = 'admin'
             }
 

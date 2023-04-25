@@ -4,7 +4,6 @@ import handlebars from "express-handlebars"
 import { Server } from "socket.io"
 import mongoose from "mongoose"
 import session from 'express-session'
-import MongoStore from 'connect-mongo'
 import passport from "passport";
 import initializePassport from "./config/passport.config.js";
 import cookieParser from "cookie-parser"
@@ -26,9 +25,11 @@ import messagesModel from "./dao/models/messages.models.js"
 const app = express()
 const httpServer = app.listen(8080, () => console.log('Server up!'))
 const io = new Server(httpServer)
+//Config 
+import config from "./config/config.js"
 
 //Uri mongoose
-const uri = 'mongodb+srv://ecommercecoder:ecommercecoder@ecommerce.uk3b0az.mongodb.net/ecommerce?retryWrites=true&w=majority'
+const uri = config.app.mongoURL
 
 //Session
 app.use(session({
@@ -47,9 +48,9 @@ app.use(express.urlencoded({ extended: true }))
 //Cookie parser
 app.use(cookieParser())
 //Handlebars
-app.engine('handlebars', handlebars.engine())
+app.engine('hbs', handlebars.engine({extname: '.hbs', defaultLayout: 'index.hbs'}))
 app.set('views', __dirname + '/views')
-app.set('view engine', 'handlebars')
+app.set('view engine', 'hbs')
 //Path for JS
 app.use('/realTimeProducts', express.static(__dirname + '/public'))
 app.use('/messages', express.static(__dirname + '/public'))
