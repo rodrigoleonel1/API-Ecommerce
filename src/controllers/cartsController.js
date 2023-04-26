@@ -1,44 +1,51 @@
-import cartModel from '../dao/models/cart.model.js'
-import { saveFsData, cartsPath } from '../dao/fs/helpers/saveFsData.js'
+import CartsService from '../services/cartsServices.js'
+const cartService = new CartsService()
+
+// GET/api/carts/
+const getCarts = async (req, res) =>{
+    try {
+        const carts = await cartService.getCarts()
+        res.status(200).json( { status: 'success', carts })
+    } catch (error) {
+        res.status(400).json({ status: "error", message: error.message})
+    }
+}
 
 // POST/api/carts
 const createCart = async (req, res) =>{
-    const newCart = await cartModel.create({})
-    res.status(201).json({status: "success", message: "Cart created", newCart})
-    saveFsData(cartModel, cartsPath)
+    try {
+        const newCart = await cartService.createCart()
+        res.status(201).json({status: "success", message: "Cart created", newCart})
+    } catch (error) {
+        res.status(400).json({ status: "error", message: error.message})
+    }
 }
 
 // GET/api/carts/:cid
 const getCart = async (req, res) =>{
     try {
         const cid = req.params.cid
-        const cart = await cartModel.find({_id: cid})
+        const cart = await cartService.getCartById(cid)
         if (!cart) return res.status(400).json({ status: "error", message: 'Cart not found'})
-        res.status(200).json({cart})
+        res.status(200).json(cart)
     } catch (error) {
+        if (error.name === 'CastError') return res.status(400).json({ status: "error", message: 'There is no cart with that ID'})
         res.status(400).json({ status: "error", message: error.message})
     }
 }
 
 // POST/api/carts/:cid/product/:pid
 const addToCart = async (req, res) =>{
-    const cid = req.params.cid
-    const pid = req.params.pid
-    const cart = await cartModel.findById(cid)
-    const product = cart.products.find( p => p.product == pid)
-
-    if (!cart) return res.status(400).json({ status: "error", message: 'Cart not found'})
-
-    if(!product){
-        cart.products.push({product: pid, quantity: 1})
-        await cartModel.updateOne({ _id: cid}, cart)
-        res.status(200).json({ status: "success", message: 'Product added', cart})
-    } else {
-        product.quantity++
-        await cartModel.updateOne({ _id: cid}, cart)
-        res.status(200).json({ status: "success", message: 'Quantity updated', cart})
+    try {
+        const cid = req.params.cid
+        const pid = req.params.pid
+        const cart = await cartService.addProduct(cid, pid)
+        if (!cart) return res.status(400).json({ status: "error", message: 'Cart not found'})
+        res.status(200).json({ status: "success", message: 'The product has been updated in the cart', cart})
+    } catch (error) {
+        if (error.name === 'CastError') return res.status(400).json({ status: "error", message: 'There is no cart with that ID'})
+        res.status(400).json({ status: "error", message: error.message})
     }
-    saveFsData(cartModel, cartsPath)
 }
 
 // DELETE/api/carts/:cid/products/:pid
@@ -46,18 +53,12 @@ const deleteCartProduct = async (req, res) => {
     try {
         const cid = req.params.cid
         const pid = req.params.pid
-    
-        const cart = await cartModel.findById(cid)
-        const productIndex = cart.products.findIndex(p => p.product == pid)
-        console.log(productIndex)
-        if (productIndex <= 0) return res.status(400).json({ status: "error", message: 'Product not found'})
-
-        cart.products.splice(productIndex, 1)
-        await cart.save()
-        res.status(200).json({ status: "success", cart})
-        saveFsData(cartModel, cartsPath)
+        const cart = await cartService.deleteProduct(cid, pid)
+        if (!cart) return res.status(400).json({ status: "error", message: 'Product not found'})
+        res.status(200).json({ status: "success", message: 'The product has been updated in the cart', cart})
     } catch (error) {
-        res.status(400).json({ status: "error", message: 'Cart not found'})
+        if (error.name === 'CastError') return res.status(400).json({ status: "error", message: 'There is no cart with that ID'})
+        res.status(400).json({ status: "error", message: error.message})
     }
 }
 
@@ -65,12 +66,11 @@ const deleteCartProduct = async (req, res) => {
 const updateCartProducts = async (req, res) => {
     try {
         const cid = req.params.cid
-        const cart = await cartModel.findById(cid)
-        cart.products = req.body
-        await cart.save()
+        const body = req.body
+        const cart = await cartService.updateCart(cid, body)
         res.status(200).json({ status: "success", cart})
-        saveFsData(cartModel, cartsPath)
     } catch (error) {
+        if (error.name === 'CastError') return res.status(400).json({ status: "error", message: 'There is no cart with that ID'})
         res.status(400).json({ status: "error", message: error.message})
     }
 }
@@ -80,13 +80,12 @@ const updateProductQuantity = async (req, res) => {
     try {
         const cid = req.params.cid
         const pid = req.params.pid
-        const cart = await cartModel.findById(cid)
-        const product = cart.products.find( p => p.product == pid)
-        product.quantity = req.body.quantity
-        await cart.save()
+        const body = req.body.quantity
+        const cart = await cartService.updateQuantity(cid, pid, body)
+        if (!cart) return res.status(400).json({ status: "error", message: 'Quantity could not be updated'})
         res.status(200).json({ status: "success", message: "Quantity updated", cart})
-        saveFsData(cartModel, cartsPath)
     } catch (error) {
+        if (error.name === 'CastError') return res.status(400).json({ status: "error", message: 'There is no cart with that ID'})
         res.status(400).json({ status: "error", message: error.message})
     }
 }
@@ -95,14 +94,26 @@ const updateProductQuantity = async (req, res) => {
 const deleteCartProducts = async (req, res) => {
     try {
         const cid = req.params.cid
-        const cart = await cartModel.findById(cid)
-        cart.products = []
-        await cart.save()
+        const cart = await cartService.clearCart(cid)
+        if (!cart) return res.status(400).json({ status: "error", message: 'Cart not found'})
         res.status(200).json({ status: "success", message: "Products deleted", cart})
-        saveFsData(cartModel, cartsPath)
     } catch (error) {
+        if (error.name === 'CastError') return res.status(400).json({ status: "error", message: 'There is no cart with that ID'})
         res.status(400).json({ status: "error", message: error.message})
     }
 }
 
-export { createCart, getCart, addToCart, deleteCartProduct, updateCartProducts, updateProductQuantity, deleteCartProducts } 
+// DELETE/api/carts/cart/:cid
+const deleteCart = async (req, res) =>{
+    try {
+        const cid = req.params.cid
+        const cart = await cartService.deleteCart(cid)
+        if (!cart) return res.status(400).json({ status: "error", message: 'Cart not found'})
+        res.status(200).json({ status: "success", message: "Cart deleted", cart})
+    } catch (error) {
+        if (error.name === 'CastError') return res.status(400).json({ status: "error", message: 'There is no cart with that ID'})
+        res.status(400).json({ status: "error", message: error.message})
+    }
+}
+
+export { createCart, getCart, addToCart, deleteCartProduct, updateCartProducts, updateProductQuantity, deleteCartProducts, getCarts, deleteCart } 

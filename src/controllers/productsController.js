@@ -1,57 +1,45 @@
-import productModel from '../dao/models/products.model.js'
-import { saveFsData, productsPath } from '../dao/fs/helpers/saveFsData.js'
+import ProductsService from '../services/productsServices.js'
+const productService = new ProductsService()
 
 // GET/api/products
 const getProducts = async (req, res) =>{
-
-    const limit = req.query?.limit || 10
-    const page = req.query?.page || 1
-
-    let query = {}
-    if(req.query.category || req.query.status) query = req.query
-
-    let sort = req.query.sort
-    let sortBy = null
-    if(sort === 'desc') sortBy = {price: -1}
-    if(sort === 'asc') sortBy = {price: 1}
+    try {
+        const limit = req.query?.limit || 10
+        const page = req.query?.page || 1
+        let sort = req.query.sort
+        let query = {}
+        if(req.query.category || req.query.status) query = req.query
+        let controllerType = 'api'
+        let products = await productService.getProductsPaginated(query, page, limit, sort, controllerType)
     
-    const products = await productModel.paginate(query, { page, limit, sort: sortBy, lean: true})
-    products.prevLink = products.hasPrevPage ? `http://localhost:8080/api/products?page=${products.prevPage}&limit=${limit}&sort=${sort}` : ''
-    products.nextLink = products.hasNextPage ? `http://localhost:8080/api/products?page=${products.nextPage}&limit=${limit}&sort=${sort}` : ''
-
-    if(products.totalDocs === 0){
-        res.status(200).json( { status: 'error', products })
-    } else {
+        if(products.totalDocs === 0) return res.status(200).json( { status: 'error', products })
         res.status(200).json( { status: 'success', products })
+    } catch (error) {
+        return res.status(400).json({ status: "error", message: error.message})
     }
 }
 
 // GET/api/products/:pid
 const getProductById = async (req, res) =>{
-    const pid = req.params.pid
-    const product = await productModel.findOne({_id: pid})
-    if (!product){
-        return res.status(400).json({ status: "error", message: 'Product not found'})
+    try {
+        const pid = req.params.pid
+        const product = await productService.getProductById(pid)
+        if (!product) return res.status(400).json({ status: "error", message: 'Product not found'})
+        res.status(200).json( product )
+    } catch (error) {
+        if (error.name === 'CastError') return res.status(400).json({ status: "error", message: 'There is no product with that ID'})
+        return res.status(400).json({ status: "error", message: error.message})
     }
-    res.status(200).json( product )
 }
 
 // POST/api/products
 const createProduct = async (req, res) =>{
     try {
         const newProduct = req.body
-        let products = await productModel.find().lean().exec()
-        if( !newProduct.title || !newProduct.description || !newProduct.code || !newProduct.price || !newProduct.status || !newProduct.stock || !newProduct.category ) {
-            return res.status(400).json({ status: "error", message: 'Product not complete'})
-        }
-        if (products.find(e => e.code === newProduct.code)){
-            return res.status(400).json({ status: "error", message: 'Code not available'})
-        }
-        const productAdded = await productModel.create(newProduct)
+        const productAdded = await productService.createProduct(newProduct)
+        if(productAdded.status === "error") return res.status(201).json(productAdded)
         res.status(201).json({status: "success", message: "Product created", productAdded})
-        saveFsData(productModel, productsPath)
     } catch (error) {
-        console.log(error)
         res.status(400).json({ status: "error", message: 'Product not created'})
     }
 }
@@ -61,19 +49,12 @@ const updateProduct = async (req, res) =>{
     try {
         const pid = req.params.pid
         const productToUpdate = req.body
-
-        if( !productToUpdate.title || !productToUpdate.description || !productToUpdate.code || !productToUpdate.price || !productToUpdate.status || !productToUpdate.stock || !productToUpdate.category ){
-            return res.status(400).json({ status: "error", message: 'Product not complete'})}
-    
-        const product = await productModel.findOneAndUpdate({ _id: pid}, productToUpdate)
-        if(product === null){
-            return res.status(400).json({ status: "error", message: 'Product not found'})
-        }        
-        saveFsData(productModel, productsPath)
+        const product = await productService.updateProduct(pid, productToUpdate)
+        if(product === null) return res.status(400).json({ status: "error", message: 'Product not found'})
         res.status(200).json({ status: "success", message: "Product updated", productToUpdate })
     } catch (error) {
-        console.log(error)
-        res.status(400).json({ status: "error", message: 'Product not updated'})
+        if (error.name === 'CastError') return res.status(400).json({ status: "error", message: 'There is no product with that ID'})
+        res.status(400).json({ status: "error", message: error.message})
     }
 }
 
@@ -81,22 +62,12 @@ const updateProduct = async (req, res) =>{
 const deleteProduct = async (req, res) =>{
     try {
         const pid = req.params.pid
-        const productDeleted = await productModel.deleteOne({_id: pid})
-
-        if(productDeleted.deletedCount === 0){
-            return res.status(400).json({ status: "error", message: 'Product not found'})
-        }
-
-        res.status(200).json({
-            status: "Success",
-            massage: "Product deleted",
-            productDeleted
-        })
-        saveFsData(productModel, productsPath)
+        const productDeleted = await productService.deleteProduct(pid)
+        if(productDeleted.deletedCount === 0)  return res.status(400).json({ status: "error", message: 'Product not found'})
+        res.status(200).json({ status: "Success", massage: "Product deleted", productDeleted })
     } catch (error) {
-        console.log(error)
         if (error.name === 'CastError') return res.status(400).json({ status: "error", message: 'There is no product with that ID'})
-        res.status(400).json({ status: "error", message: 'Product not created', error: error})
+        res.status(400).json({ status: "error", message: 'Product not deleted', error: error})
     }
 }
 

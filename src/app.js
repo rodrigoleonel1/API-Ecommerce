@@ -48,7 +48,7 @@ app.use(express.urlencoded({ extended: true }))
 //Cookie parser
 app.use(cookieParser())
 //Handlebars
-app.engine('hbs', handlebars.engine({extname: '.hbs', defaultLayout: 'index.hbs'}))
+app.engine('hbs', handlebars.engine({extname: '.hbs', defaultLayout: 'index.hbs',}))
 app.set('views', __dirname + '/views')
 app.set('view engine', 'hbs')
 //Path for JS
