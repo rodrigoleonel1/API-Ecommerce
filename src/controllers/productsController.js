@@ -37,7 +37,7 @@ const createProduct = async (req, res) =>{
     try {
         const newProduct = req.body
         const productAdded = await productService.createProduct(newProduct)
-        if(productAdded.status === "error") return res.status(201).json(productAdded)
+        if(productAdded == null) return res.status(400).json({ status: "error", message: 'There is already a product with that code'})
         res.status(201).json({status: "success", message: "Product created", productAdded})
     } catch (error) {
         res.status(400).json({ status: "error", message: 'Product not created'})

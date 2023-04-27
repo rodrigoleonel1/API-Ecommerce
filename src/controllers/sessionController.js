@@ -23,9 +23,7 @@ const loginView = (req, res) =>{
 
 //Login API
 const createLogin = async (req, res) =>{
-    if(!req.user){
-        return res.status(400).send({status: 'error', error: 'Invalid credentiales'})
-    }
+    if(!req.user) return res.status(400).send({status: 'error', error: 'Invalid credentiales'})
     res.cookie(JWT_COOKIE_NAME, req.user.token).redirect('/products')
 }
 
@@ -47,7 +45,6 @@ const createLoginGithub = async (req, res) =>{
 //Current session
 const getCurrentSession = async (req, res) =>{
     try {
-        console.log(req.user)
         const uid = req.user._id
         const user = await userModel.find({_id: uid}).populate('cart')
         if (!user) return res.status(400).json({ status: "error", message: "No user logged in"})

@@ -30,14 +30,11 @@ export default class ProductsService{
         return await this.productsDao.getById(pid)
     }
 
-    createProduct = async(newProduct, res) =>{
+    createProduct = async(newProduct) =>{
         let products = await this.productsDao.getAll()
-        if (products.find(e => e.code === newProduct.code)){
-            let error = {status: "error", message: 'Product not created'}
-            return error
-        }
-        let productAdded = await this.productsDao.create(newProduct)
-        return productAdded
+        if (products.find(e => e.code === newProduct.code)) return null
+        let product = await this.productsDao.create(newProduct)
+        return product
     }
 
     updateProduct = async(pid, productToUpdate) =>{

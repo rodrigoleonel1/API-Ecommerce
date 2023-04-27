@@ -10,7 +10,7 @@ export default class ProductsDao {
         if(!query){
             let results = await this.model.find()
             return results
-        }else{
+        } else{
             let results = await this.model.paginate(query, { page, limit, sort: sortBy, lean: true})
             return results
         }
