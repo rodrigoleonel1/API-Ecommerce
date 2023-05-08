@@ -1,5 +1,6 @@
 import  { Router } from 'express'
 import { getProducts, getProductById, createProduct, updateProduct, deleteProduct} from '../controllers/productsController.js'
+import { isAdmin } from '../middleware/auth.js'
 
 const router = Router()
 
@@ -7,10 +8,10 @@ router.get('/', getProducts)
 
 router.get('/:pid', getProductById)
 
-router.post('/', createProduct)
+router.post('/', isAdmin, createProduct)
 
-router.put('/:pid', updateProduct)
+router.put('/:pid', isAdmin, updateProduct)
 
-router.delete('/:pid', deleteProduct)
+router.delete('/:pid', isAdmin, deleteProduct)
 
 export default router

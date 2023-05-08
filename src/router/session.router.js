@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import passport from 'passport'
 import { closeSession, createLogin, createLoginGithub, createSession, failLoginView, failRegisterView, getCurrentSession, getRegisterView, loginView } from '../controllers/sessionController.js'
+import { isAdmin } from '../middleware/auth.js'
 
 const router = Router()
 
@@ -30,7 +31,7 @@ router.get('/api/sessions/github', passport.authenticate('github', { scope: ['us
 router.get('/api/sessions/githubcallback', passport.authenticate('github', { failureRedirect: '/login'}), createLoginGithub)
 
 //Current session
-router.get('/api/sessions/current', getCurrentSession)
+router.get('/api/sessions/current', isAdmin, getCurrentSession)
 
 
 export default router

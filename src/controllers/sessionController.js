@@ -14,7 +14,9 @@ const createSession = async (req, res) =>{
 
 //Fail register view
 const failRegisterView = (req, res) =>{
-    res.send({error: 'Fail register'})
+    res.status(401).render('errors/base', {
+        error: 'Fail register, user already exist.'   
+    })
 }
 
 //Login view
@@ -30,7 +32,9 @@ const createLogin = async (req, res) =>{
 
 //Fail login view
 const failLoginView = (req, res) =>{
-    res.send({ error: 'Fail login'})
+    res.status(401).render('errors/base', {
+        error: 'Fail login, invalide credentials.'   
+    })
 }
 
 //Close session API 

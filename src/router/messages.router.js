@@ -1,7 +1,8 @@
 import  { Router } from 'express'
+import { isUser } from '../middleware/auth'
 const router = Router()
 
-router.get('/', ( req, res) => {
+router.get('/', isUser , ( req, res) => {
     res.render('messages', { title: 'Chat' })
 })
 

@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import { createCart, getCart, addToCart, deleteCartProduct, updateCartProducts, updateProductQuantity, deleteCartProducts, getCarts, deleteCart, purchaseCart } from '../controllers/cartsController.js'
+import { isUser } from '../middleware/auth.js'
 
 const router = Router()
 
@@ -9,7 +10,7 @@ router.get('/:cid', getCart)
 
 router.get('/', getCarts)
 
-router.post('/:cid/product/:pid', addToCart)
+router.post('/:cid/product/:pid', isUser, addToCart)
 
 router.delete('/:cid/products/:pid', deleteCartProduct)
 
