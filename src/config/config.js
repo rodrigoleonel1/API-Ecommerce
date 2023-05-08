@@ -3,9 +3,8 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 export default {
-    app: {
-        mongoURL: process.env.MONGO_URL,
-        adminEmail: process.env.ADMIN_EMAIL,
-        adminPassword: process.env.ADMIN_PASSWORD
-    }
+    MONGO_URL: process.env.MONGO_URL,
+    PERSISTENCE: process.env.PERSISTENCE,
+    ADMIN_EMAIL: process.env.ADMIN_EMAIL,
+    ADMIN_PASSWORD: process.env.ADMIN_PASSWORD
 }

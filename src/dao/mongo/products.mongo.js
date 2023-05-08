@@ -1,6 +1,5 @@
 import productsModel from "./models/products.model.js";
 
-
 export default class ProductsDao {
     constructor(){
         this.model = productsModel

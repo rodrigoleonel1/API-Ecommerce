@@ -1,6 +1,5 @@
 import cartModel from "./models/cart.model.js"
 
-
 export default class CartsDao {
     constructor(){
         this.model = cartModel

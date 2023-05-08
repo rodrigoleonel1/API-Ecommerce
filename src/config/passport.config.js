@@ -1,11 +1,11 @@
 import passport from "passport";
 import local from 'passport-local'
-import userModel from "../dao/models/user.model.js";
+import userModel from "../dao/mongo/models/user.model.js";
 import GithubStrategy from 'passport-github2'
 import { createHash, isValidPassword, generateToken, extractCookie } from "../utils.js";
 import passport_jwt from "passport-jwt";
 import { JWT_PRIVATE_KEY } from "./credentials.js";
-import cartModel from "../dao/models/cart.model.js";
+import cartModel from "../dao/mongo/models/cart.model.js";
 import config from "./config.js";
 
 const LocalStrategy = local.Strategy
@@ -36,7 +36,7 @@ const initializePassport = () =>{
                 cart: newCart._id
             }
             
-            if(newUser.email == config.app.adminEmail && isValidPassword(newUser, config.app.adminPassword)){
+            if(newUser.email == config.ADMIN_EMAIL && isValidPassword(newUser, config.ADMIN_PASSWORD)){
                 newUser.role = 'admin'
             }
 

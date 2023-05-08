@@ -1,5 +1,4 @@
-import ProductsService from '../services/productsServices.js'
-const productService = new ProductsService()
+import { productService }  from '../services/index.repository.js'
 
 // GET/api/products
 const getProducts = async (req, res) =>{

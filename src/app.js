@@ -19,8 +19,8 @@ import productsViewRouter from './router/products.view.router.js'
 import cartViewRouter from './router/cart.view.router.js'
 import sessionsRouter from './router/session.router.js'
 //Models
-import productModel from "./dao/models/products.model.js"
-import messagesModel from "./dao/models/messages.models.js"
+import productModel from "./dao/mongo/models/products.model.js"
+import messagesModel from "./dao/mongo/models/messages.models.js"
 // Run servers
 const app = express()
 const httpServer = app.listen(8080, () => console.log('Server up!'))
@@ -29,7 +29,7 @@ const io = new Server(httpServer)
 import config from "./config/config.js"
 
 //Uri mongoose
-const uri = config.app.mongoURL
+const uri = config.MONGO_URL
 
 //Session
 app.use(session({

@@ -1,12 +1,10 @@
-import ProductsDao from "../dao/productsDao.js";
-
-export default class ProductsService{
-    constructor(){
-        this.productsDao = new ProductsDao()
+export default class ProductsRepository{
+    constructor(dao){
+        this.dao = dao
     }
 
     getProducts = async () =>{
-        return await this.productsDao.getAll()
+        return await this.dao.getAll()
     }
 
     getProductsPaginated = async (query, page, limit, sort, controllerType)=>{
@@ -19,7 +17,7 @@ export default class ProductsService{
         if(controllerType == "api") type = 'api/products'
         if(controllerType == 'view') type = 'products'
 
-        let products = await this.productsDao.getAll(query, page, limit, sort, sortBy)
+        let products = await this.dao.getAll(query, page, limit, sort, sortBy)
         products.prevLink = products.hasPrevPage ? `http://localhost:8080/${type}?page=${products.prevPage}&limit=${limit}&sort=${sort}` : ''
         products.nextLink = products.hasNextPage ? `http://localhost:8080/${type}?page=${products.nextPage}&limit=${limit}&sort=${sort}` : ''
 
@@ -27,22 +25,20 @@ export default class ProductsService{
     }
 
     getProductById = async (pid) => {
-        return await this.productsDao.getById(pid)
+        return await this.dao.getById(pid)
     }
 
     createProduct = async(newProduct) =>{
-        let products = await this.productsDao.getAll()
-        if (products.find(e => e.code === newProduct.code)) return null
-        let product = await this.productsDao.create(newProduct)
+        let product = await this.dao.create(newProduct)
         return product
     }
 
     updateProduct = async(pid, productToUpdate) =>{
-        const product = await this.productsDao.update(pid, productToUpdate)
+        const product = await this.dao.update(pid, productToUpdate)
         return product
     }
 
     deleteProduct = async(pid) =>{
-        return await this.productsDao.delete(pid)
+        return await this.dao.delete(pid)
     }
 }

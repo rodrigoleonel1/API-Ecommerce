@@ -1,5 +1,4 @@
-import CartsService from '../services/cartsServices.js'
-const cartService = new CartsService()
+import { cartService }  from '../services/index.repository.js'
 
 // GET/api/carts/
 const getCarts = async (req, res) =>{
@@ -116,4 +115,19 @@ const deleteCart = async (req, res) =>{
     }
 }
 
-export { createCart, getCart, addToCart, deleteCartProduct, updateCartProducts, updateProductQuantity, deleteCartProducts, getCarts, deleteCart } 
+// POST/api/carts/:cid/purchase
+const purchaseCart = async (req, res) =>{
+    try {
+        const cid = req.params.cid
+        const user = req.user
+        const ticket = await cartService.completePurchase(cid, user.first_name);
+        if(!ticket)  return res.json({status: "error", message: 'The purchase could not be made'})
+        return res.json({ticket})
+    } catch (error) {
+        console.log(error)
+        if (error.name === 'CastError') return res.status(400).json({ status: "error", message: 'There is no cart with that ID'})
+        res.status(400).json({ status: "error", message: error.message})
+    }
+}
+
+export { createCart, getCart, addToCart, deleteCartProduct, updateCartProducts, updateProductQuantity, deleteCartProducts, getCarts, deleteCart, purchaseCart } 

@@ -1,5 +1,6 @@
 import { JWT_COOKIE_NAME } from "../config/credentials.js"
-import userModel from "../dao/models/user.model.js"
+import userModel from "../dao/mongo/models/user.model.js"
+import UsersDTO from "../dao/DTOs/user.dto.js"
 
 //Register view
 const getRegisterView = (req, res) =>{
@@ -46,9 +47,13 @@ const createLoginGithub = async (req, res) =>{
 const getCurrentSession = async (req, res) =>{
     try {
         const uid = req.user._id
-        const user = await userModel.find({_id: uid}).populate('cart')
+        let user = await userModel.find({_id: uid}).populate('cart')
+        console.log(user.cart)
         if (!user) return res.status(400).json({ status: "error", message: "No user logged in"})
+        let {_id, first_name, last_name, email, age, role} = req.user
+        user = new UsersDTO({_id, first_name, last_name, email, age, role})
         res.status(200).json({user})
+        
     } catch (error) {
         res.status(400).json({ status: "error", message: error.message})
     }
