@@ -18,6 +18,7 @@ import messagesRouter from './router/messages.router.js'
 import productsViewRouter from './router/products.view.router.js'
 import cartViewRouter from './router/cart.view.router.js'
 import sessionsRouter from './router/session.router.js'
+import mockingRouter from './router/mocking.router.js'
 //Models
 import productModel from "./dao/mongo/models/products.model.js"
 import messagesModel from "./dao/mongo/models/messages.models.js"
@@ -63,6 +64,7 @@ app.use('/messages', messagesRouter)
 app.use('/products', passportCall('jwt'), productsViewRouter)
 app.use('/cart', cartViewRouter)
 app.use('/', sessionsRouter)
+app.use('/mockingproducts', mockingRouter)
 
 //Socket.io
 io.on('connection', async socket =>{
