@@ -1,4 +1,8 @@
+import Errors from '../services/errors/enums.js'
+import CustomError from '../services/errors/CustomError.js'
+import { generateErrorInfo } from '../services/errors/info.js'
 import { productService }  from '../services/index.repository.js'
+import handleError from '../middlewares/error.js'
 
 // GET/api/products
 const getProducts = async (req, res) =>{
@@ -35,11 +39,19 @@ const getProductById = async (req, res) =>{
 const createProduct = async (req, res) =>{
     try {
         const newProduct = req.body
+        if (!newProduct.title || !newProduct.description || !newProduct.code || !newProduct.price || !newProduct.status || !newProduct.stock || !newProduct.category || !newProduct.thumbnail) {
+            CustomError.createError({
+                name: "Product creation error",
+                cause: generateErrorInfo(newProduct),
+                message: "Error trying to create a product",
+                code: Errors.INVALID_TYPES_ERROR
+            })
+        }
         const productAdded = await productService.createProduct(newProduct)
         if(productAdded == null) return res.status(400).json({ status: "error", message: 'There is already a product with that code'})
         res.status(201).json({status: "success", message: "Product created", productAdded})
-    } catch (error) {
-        res.status(400).json({ status: "error", message: 'Product not created'})
+    } catch (error){
+        handleError(error, res)
     }
 }
 
