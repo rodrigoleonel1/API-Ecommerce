@@ -1,3 +1,7 @@
+import Errors from '../errors/enums.js'
+import CustomError from '../errors/CustomError.js'
+import { generateErrorInfo } from '../errors/info.js'
+
 export default class ProductsRepository{
     constructor(dao){
         this.dao = dao
@@ -29,6 +33,14 @@ export default class ProductsRepository{
     }
 
     createProduct = async(newProduct) =>{
+        if (!newProduct.title || !newProduct.description || !newProduct.code || !newProduct.price || !newProduct.status || !newProduct.stock || !newProduct.category || !newProduct.thumbnail) {
+            return CustomError.createError({
+                name: "Product creation error",
+                cause: generateErrorInfo(newProduct),
+                message: "Error trying to create a product",
+                code: Errors.INVALID_TYPES_ERROR
+            })
+        }
         let product = await this.dao.create(newProduct)
         return product
     }
