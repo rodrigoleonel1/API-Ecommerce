@@ -1,0 +1,5 @@
+info: Server up! {"timestamp":"2023-05-29T19:11:26.123Z"}
+info: Testing info logger. {"timestamp":"2023-05-29T19:11:30.545Z"}
+warning: Testing warning logger. {"timestamp":"2023-05-29T19:11:30.546Z"}
+error: Testing error logger. {"timestamp":"2023-05-29T19:11:30.546Z"}
+fatal: Testing fatal logger. {"timestamp":"2023-05-29T19:11:30.546Z"}

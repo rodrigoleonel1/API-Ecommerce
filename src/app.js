@@ -19,15 +19,17 @@ import productsViewRouter from './router/products.view.router.js'
 import cartViewRouter from './router/cart.view.router.js'
 import sessionsRouter from './router/session.router.js'
 import mockingRouter from './router/mocking.router.js'
+import loggerRouter from './router/logger.router.js'
 //Models
 import productModel from "./dao/mongo/models/products.model.js"
 import messagesModel from "./dao/mongo/models/messages.models.js"
-// Run servers
-const app = express()
-const httpServer = app.listen(8080, () => console.log('Server up!'))
-const io = new Server(httpServer)
 //Config 
 import config from "./config/config.js"
+import logger from "./logger.js"
+// Run servers
+const app = express()
+const httpServer = app.listen(8080, () => logger.info('Server up!'))
+const io = new Server(httpServer)
 
 //Uri mongoose
 const uri = config.MONGO_URL
@@ -65,6 +67,7 @@ app.use('/products', passportCall('jwt'), productsViewRouter)
 app.use('/cart', cartViewRouter)
 app.use('/', sessionsRouter)
 app.use('/mockingproducts', mockingRouter)
+app.use('/loggerTest', loggerRouter)
 
 //Socket.io
 io.on('connection', async socket =>{
