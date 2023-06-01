@@ -36,6 +36,7 @@ const getProductById = async (req, res) =>{
 const createProduct = async (req, res) =>{
     try {
         const newProduct = req.body
+        if(req.user){ newProduct.owner = req.user._id }
         const productAdded = await productService.createProduct(newProduct)
         res.status(201).json({status: "success", message: "Product created", productAdded})
     } catch (error){
@@ -61,6 +62,16 @@ const updateProduct = async (req, res) =>{
 const deleteProduct = async (req, res) =>{
     try {
         const pid = req.params.pid
+        const user = req.user
+        if(user.role == 'premium'){
+            let product = await productService.getProductById(pid)
+            if(product.owner != user._id){
+                return res.status(400).json({ status: "error", message: "No puedes eliminar este producto porque no eres el owner."})
+            }
+            const productDeleted = await productService.deleteProduct(pid)
+            if(productDeleted.deletedCount === 0)  return res.status(400).json({ status: "error", message: 'Product not found'})
+            return res.status(200).json({ status: "Success", massage: "Product deleted", productDeleted })
+        }
         const productDeleted = await productService.deleteProduct(pid)
         if(productDeleted.deletedCount === 0)  return res.status(400).json({ status: "error", message: 'Product not found'})
         res.status(200).json({ status: "Success", massage: "Product deleted", productDeleted })
