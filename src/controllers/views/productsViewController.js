@@ -10,7 +10,10 @@ const getProductsView = async (req, res) =>{
         let controllerType = 'view'
         let products = await productService.getProductsPaginated(query, page, limit, sort, controllerType)
         const user = req.user.user
-    
+        if (user.role == 'user'){
+            user.flag = true
+        }
+
         if(products.totalDocs === 0){
             res.render('errors/base', { error: 'Not products found' })
         } else {

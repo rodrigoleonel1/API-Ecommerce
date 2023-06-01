@@ -20,6 +20,7 @@ import cartViewRouter from './router/cart.view.router.js'
 import sessionsRouter from './router/session.router.js'
 import mockingRouter from './router/mocking.router.js'
 import loggerRouter from './router/logger.router.js'
+import usersRouter from './router/users.router.js'
 //Models
 import productModel from "./dao/mongo/models/products.model.js"
 import messagesModel from "./dao/mongo/models/messages.models.js"
@@ -68,6 +69,7 @@ app.use('/cart', cartViewRouter)
 app.use('/', sessionsRouter)
 app.use('/mockingproducts', mockingRouter)
 app.use('/loggerTest', loggerRouter)
+app.use('/api/users', usersRouter)
 
 //Socket.io
 io.on('connection', async socket =>{

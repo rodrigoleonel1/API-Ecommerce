@@ -1,5 +1,13 @@
 <div class="container d-flex flex-row align-items-center justify-content-between">
-    <h1>Bienvenido {{user.first_name}} {{user.last_name}}</h1> <div class="d-flex align-items-center gap-2">Rol: {{user.role}}<a href="http://localhost:8080/api/sessions/logout"><input class="btn btn-primary" type="button" value="Logout"></a></div>
+    <h1>Bienvenido {{user.first_name}} {{user.last_name}}</h1> 
+    <div class="d-flex align-items-center gap-2">
+        Rol: {{user.role}}<a href="http://localhost:8080/api/sessions/logout"><input class="btn btn-primary" type="button" value="Logout"></a>  
+        {{#if user.flag }}
+            <a href="http://localhost:8080/api/users/premium/{{user._id}} "><input class="btn btn-primary" type="button" value="Hacerse premium"></a> 
+        {{else}}
+            <a href="http://localhost:8080/api/users/premium/{{user._id}} "><input class="btn btn-primary" type="button" value="Hacerse user"></a> 
+        {{/if}}
+    </div>
 </div>
 <div class="container">
     <h2>Productos</h2>

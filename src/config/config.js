@@ -8,4 +8,6 @@ export default {
     ADMIN_PASSWORD: process.env.ADMIN_PASSWORD,
     PERSISTENCE: process.env.PERSISTENCE,
     ENVIRONMENT: process.env.ENVIRONMENT,
+    MAIL_USER: process.env.MAIL_USER,
+    MAIL_PASS: process.env.MAIL_PASS
 }
