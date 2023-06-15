@@ -27,6 +27,8 @@ import messagesModel from "./dao/mongo/models/messages.models.js"
 //Config 
 import config from "./config/config.js"
 import logger from "./logger.js"
+import swaggerUiExpress from "swagger-ui-express"
+import swaggerJsdoc from "swagger-jsdoc"
 // Run servers
 const app = express()
 const httpServer = app.listen(8080, () => logger.info('Server up!'))
@@ -87,7 +89,22 @@ io.on('connection', socket =>{
     })
 })
 
+//Swagger
+
+const swaggerOptions = {
+    definition: {
+        openapi: '3.0.1',
+        info: {
+            title: 'Documentación API Ecommerce',
+            description: 'API de Ecommerce para CoderHouse'
+        }
+    },
+    apis:[`${__dirname}/docs/**/*.yaml`]
+}
+
+const specs = swaggerJsdoc(swaggerOptions)
+app.use('/api/docs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs)) 
+
 //Mongoose
 mongoose.set('strictQuery', false)
 mongoose.connect(uri)
-

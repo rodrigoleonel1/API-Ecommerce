@@ -12,7 +12,7 @@ const getProducts = async (req, res) =>{
         let controllerType = 'api'
         let products = await productService.getProductsPaginated(query, page, limit, sort, controllerType)
     
-        if(products.totalDocs === 0) return res.status(200).json( { status: 'error', products })
+        if(products.totalDocs === 0) return res.status(400).json( { status: 'error', products })
         res.status(200).json( { status: 'success', products })
     } catch (error) {
         return res.status(400).json({ status: "error", message: error.message})

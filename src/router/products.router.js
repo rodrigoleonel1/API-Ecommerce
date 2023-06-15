@@ -4,7 +4,7 @@ import { isAdmin, isPremiumOrAdmin } from '../middlewares/auth.js'
 
 const router = Router()
 
-router.get('/', isPremiumOrAdmin, getProducts)
+router.get('/', getProducts)
 
 router.get('/:pid', getProductById)
 

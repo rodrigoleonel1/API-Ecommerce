@@ -1,0 +1,219 @@
+paths:
+  /api/products:
+    get:
+      summary: Obtiene todos los productos
+      tags: 
+        - Products
+      responses:
+        200:
+          description: Muestra lista de productos 
+          content: 
+            application/json:
+              schema: 
+                type: array
+                items:
+                  $ref: '#components/schemas/Products'
+        400: 
+          description: Error en el pedido al servidor    
+    post:
+      summary: Crea un producto a partir del body enviado
+      tags:
+      - Products
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#components/schemas/Product'      
+      responses:
+        200:
+          description: Muestra el producto creado
+        400: 
+          description: Error en el pedido al servidor
+        401: 
+          description: Error por no tener la autorización para completar la petición                            
+  /api/products/{pid}:
+    get:
+      summary: Obtiene un producto específico 
+      tags: 
+        - Products
+      parameters:
+      - name: pid
+        in: path
+        required: true
+        description: ID del producto que desea solicitar 
+        schema:
+          $type: string
+      responses:
+        200:
+          description: Muestra el producto cuyo id se haya pasado por params
+          content: 
+            application/json:
+              schema: 
+                type: array
+                items:
+                  $ref: '#components/schemas/Product'
+        400: 
+          description: Error en el pedido al servidor   
+    put:
+      summary: Actualiza un producto a partir de su id
+      tags: 
+        - Products
+      parameters: 
+      - name: pid
+        in: path
+        required: true
+        description: ID del producto que desea solicitar      
+        schema: 
+          $type: String 
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#components/requestBodies/updateProduct'  
+      responses:
+        200:
+          description: Muestra el producto luego de ser actualizado
+          content: 
+            application/json:
+              type: object
+              schema: 
+                properties: 
+                  status:
+                    type: String
+                    example: success
+                  massage: 
+                    type: String 
+                    example: Product updated
+                  productUpdated:   
+                    type: object 
+                    example:
+                      $ref: '#components/requestBodies/updateProduct/example'         
+        400: 
+          description: Error en el pedido al servidor     
+        401: 
+          description: Error por no tener la autorización para completar la petición       
+    delete: 
+      summary: Elimina un producto a partir de su id
+      tags: 
+        - Products
+      parameters:
+      - name: pid
+        in: path
+        required: true
+        description: ID del producto que desea solicitar 
+        schema:
+          $type: string        
+      responses:
+        200:
+          description: Mensaje de que el producto se ha eliminado con éxito  
+        400: 
+          description: Error en el pedido al servidor 
+        401: 
+          description: Error por no tener la autorización para completar la petición           
+
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        _id:
+          type: ObjectId
+          description: Id autogenerado de mongo
+        title: 
+          type: String
+          description: Nombre del producto
+        description: 
+          type: String
+          description: Descripción del producto
+        code: 
+          type: String
+          description: Código del producto
+        price: 
+          type: Number
+          description: Precio del producto
+        status: 
+          type: Boolean
+          description: Estado del producto
+        stock: 
+          type: Number
+          description: Cantidad de stock del producto
+        category: 
+          type: String
+          description: Categoria del producto
+        thumbnail: 
+          type: String
+          description: URL de la imagen del producto
+        owner: 
+          type: String
+          description: Nombre del creador del producto (Por default es "admin")
+      example:
+        _id: 641f930dec14bb9f84b578a5
+        title: Xiaomi Redmi 10A
+        description: Su memoria RAM de 2 GB es justo lo que necesitás para utilizar las funciones más importantes como llamar, enviar mensajes, navegar y ejecutar aplicaciones de uso frecuente como redes sociales o multimedia
+        code: aa001
+        price: 54.999
+        status: true
+        stock: 10
+        category: xiaomi
+        thumbnail: https://http2.mlstatic.com/D_NQ_NP_873230-MLA50329307571_062022-O.webp
+        owner: admin   
+    Products:
+      type: object
+      properties:
+        status: 
+          type: String
+          description: Texto que confirma que la petición tuvo èxito
+        products: 
+          type: object
+          description: Objeto que contiene el array "docs" con los productos, y la información de la página de productos que se muestra (El limit, total de páginas, contador de páginas, etc)
+      example: 
+        status: success
+        products: { 
+          docs: [],
+          totalDocs: 0,
+          limit: 10,
+          totalPages: 1,
+          page: 1,
+          pagingCounter: 1,
+          hasPrevPage: false,
+          hasNextPage: true,
+          prevPage: null,
+          nextPage: null,
+          prevLink: "",
+          nextLink: "" 
+        }
+  requestBodies:
+    updateProduct:
+      type: object   
+      properties: 
+        title: 
+          type: String
+          description: Nombre del producto
+        description: 
+          type: String
+          description: Descripción del producto
+        price: 
+          type: Number
+          description: Precio del producto
+        status: 
+          type: Boolean
+          description: Estado del producto
+        stock: 
+          type: Number
+          description: Cantidad de stock del producto
+        category: 
+          type: String
+          description: Categoria del producto
+        thumbnail: 
+          type: String
+          description: URL de la imagen del producto
+      example: 
+        title: Xiaomi Redmi 10A
+        description: Su memoria RAM de 5 GB es justo lo que necesitás para utilizar las funciones más importantes como llamar, enviar mensajes, navegar y ejecutar aplicaciones de uso frecuente como redes sociales o multimedia
+        price: 50.999
+        status: true
+        stock: 5
+        category: xiaomi
+        thumbnail: https://http2.mlstatic.com/D_NQ_NP_873230-MLA50329307571_062022-O.webp

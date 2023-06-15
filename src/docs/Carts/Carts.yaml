@@ -1,0 +1,271 @@
+paths:
+  /api/carts:
+    get:
+      summary: Obtiene todos los carritos
+      tags: 
+        - Carts
+      responses:
+        200:
+          description: Muestra lista de carritos
+          content: 
+            application/json:
+              type: object
+              schema: 
+                type: array
+                items:
+                  $ref: '#components/schemas/Carts'                              
+        400: 
+          description: Error en el pedido al servidor 
+    post:     
+      summary: Crea un carrito
+      tags: 
+        - Carts
+      responses:
+        200:
+          description: Muestra el carrito creado
+          content: 
+            application/json:
+              schema: 
+                properties: 
+                  status:
+                    type: String
+                    example: success
+                  message: 
+                    type: String
+                    example: Cart created  
+                  newCart:
+                    type: object
+                    example:
+                      $ref: '#components/schemas/Cart/example'          
+        400: 
+          description: Error en el pedido al servidor  
+
+  /api/carts/{cid}:  
+    get:
+      summary: Obtiene el carrito cuyo id se haya pasado por params
+      tags: 
+        - Carts
+      parameters:
+      - name: cid
+        in: path
+        required: true
+        description: ID del carrito que desea solicitar 
+        schema:
+          $type: string  
+      responses:
+        200:
+          description: Muestra un carrito a partir de su id
+          content: 
+            application/json:
+              schema: 
+                type: array
+                items:
+                  $ref: '#components/schemas/Cart'
+        400: 
+          description: Error en el pedido al servidor  
+    put:           
+      summary: Actualiza los productos de un carrito a partir de su id
+      tags: 
+        - Carts
+      parameters:
+      - name: cid
+        in: path
+        required: true
+        description: ID del carrito que desea solicitar 
+        schema:
+          $type: string       
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#components/requestBodies/updateCartProducts'               
+      responses:
+        200:
+          description: Muestra el carrito luego de ser actualizado
+        400: 
+          description: Error en el pedido al servidor  
+    delete:
+      summary: Elimina todos los productos de el carrito a partir de su id
+      tags: 
+        - Carts
+      parameters:
+      - name: cid
+        in: path
+        required: true
+        description: ID del carrito que desea solicitar 
+        schema:
+          $type: string          
+      responses:
+        200:
+          description: Mensaje de que los productos se eliminaron con éxito
+          content: 
+            application/json:
+              schema: 
+                items:
+                  $ref: '#components/schemas/DeletedCart'
+        400: 
+          description: Error en el pedido al servidor  
+
+  /api/carts/{cid}/product/{pid}:
+    post:  
+      summary: Añade el producto obtenido por params al carrito obtenido por params. Si el producto ya existe el el carrito aumenta su quantity en +1
+      tags: 
+        - Carts
+      parameters:
+      - name: cid
+        in: path
+        required: true
+        description: ID del carrito que desea solicitar 
+        schema:
+          $type: string  
+      - name: pid
+        in: path
+        required: true
+        description: ID del producto que desea agregar 
+        schema:
+          $type: string                             
+      responses:
+        200:
+          description: Mensaje de que el producto se actualizo con éxito
+        400: 
+          description: Error en el pedido al servidor   
+        401: 
+          description: Error por no tener la autorización para completar la petición              
+
+  /api/carts/{cid}/products/{pid}:
+    put:           
+      summary: Actualiza la cantidad un producto específico obtenido por params de un carrito a partir de su id
+      tags: 
+        - Carts
+      parameters:
+      - name: cid
+        in: path
+        required: true
+        description: ID del carrito que desea solicitar 
+        schema:
+          $type: string 
+      - name: pid
+        in: path
+        required: true
+        description: ID del producto que desea agregar 
+        schema:
+          $type: string             
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#components/requestBodies/updateQuantity'                   
+      responses:
+        200:
+          description: Muestra el carrito luego de ser actualizado
+        400: 
+          description: Error en el pedido al servidor  
+    delete:
+      summary: Elimina un producto específico obetenido por params de un carrito a partir de su id
+      tags: 
+        - Carts
+      parameters:
+      - name: cid
+        in: path
+        required: true
+        description: ID del carrito que desea solicitar 
+        schema:
+          $type: string 
+      - name: pid
+        in: path
+        required: true
+        description: ID del producto que desea agregar 
+        schema:
+          $type: string          
+      responses:
+        200:
+          description: Mensaje de que el producto se eliminó con éxito
+        400: 
+          description: Error en el pedido al servidor
+
+  /api/carts/cart/{cid}:
+    delete: 
+      summary: Elimina un carrito a partir de su id
+      tags: 
+        - Carts
+      parameters:
+      - name: cid
+        in: path
+        required: true
+        description: ID del carrito que desea solicitar 
+        schema:
+          $type: string       
+      responses:
+        200:
+          description: Mensaje de que el carrito se eliminó con éxito
+        400: 
+          description: Error en el pedido al servidor    
+
+components:
+  schemas:
+    Cart:
+      type: object
+      properties:
+        _id:
+          type: ObjectId
+          description: Id autogenerado de mongo
+        products:
+          type: Array
+          description: Array contenedor de productos
+          items: 
+            product: 
+              type: ObjectId
+              description: Id del producto
+            quantity:
+              type: Number
+              description: Cantidad del producto en el carrito
+      example: 
+        _id: 64370d78aecf7c5538044ebe
+        products: []
+    Carts:
+      type: object
+      properties:
+        status:
+          type: ObjectId
+          description: Id autogenerado de mongo
+        carts:
+          type: Array
+          description: Array contenedor de carritos
+      example: 
+        status: success
+        carts: [{_id: 6477de5bd89f6244fd22d33e,products: [],},{_id: 64370d78aecf7c5538044ebe, products: [{product: "641f932a7d413369011be13f", quantity: 2},{product: "641f931e1255e15a815398fc", quantity: 4}]}]
+    DeletedCart: 
+      example:  
+        message: Products deleted
+        cart: 
+          _id: 641f9126b765a81f4f97806d
+          products: []
+          __v: 0 
+
+  requestBodies:
+    updateCartProducts:
+      type: object
+      properties:
+        products:
+          type: Array
+          description: Array contenedor de productos
+          items: 
+            product: 
+              type: ObjectId
+              description: Id del producto
+            quantity:
+              type: Number
+              description: Cantidad del producto en el carrito
+      example: [{ product: 641f930dec14bb9f84b578a5, quantity: 4},{product: 641f931e1255e15a815398fc, quantity: 2}]        
+
+    updateQuantity:
+      type: object
+      properties:
+        quantity:
+          type: Number
+          description: Cantidad del producto en el carrito
+      example:
+        quantity: 4      
+              

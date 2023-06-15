@@ -14,7 +14,7 @@ const getCarts = async (req, res) =>{
 const createCart = async (req, res) =>{
     try {
         const newCart = await cartService.createCart()
-        res.status(201).json({status: "success", message: "Cart created", newCart})
+        res.status(200).json({status: "success", message: "Cart created", newCart})
     } catch (error) {
         res.status(400).json({ status: "error", message: error.message})
     }
