@@ -13,7 +13,7 @@ const getProducts = async (req, res) =>{
         let products = await productService.getProductsPaginated(query, page, limit, sort, controllerType)
     
         if(products.totalDocs === 0) return res.status(400).json( { status: 'error', products })
-        res.status(200).json( { status: 'success', products })
+        res.status(200).json({ status: 'success', payload: products})
     } catch (error) {
         return res.status(400).json({ status: "error", message: error.message})
     }
@@ -25,7 +25,7 @@ const getProductById = async (req, res) =>{
         const pid = req.params.pid
         const product = await productService.getProductById(pid)
         if (!product) return res.status(400).json({ status: "error", message: 'Product not found'})
-        res.status(200).json( product )
+        res.status(200).json({status: "success", payload: product})
     } catch (error) {
         if (error.name === 'CastError') return res.status(400).json({ status: "error", message: 'There is no product with that ID'})
         return res.status(400).json({ status: "error", message: error.message})
@@ -38,7 +38,7 @@ const createProduct = async (req, res) =>{
         const newProduct = req.body
         if(req.user){ newProduct.owner = req.user._id }
         const productAdded = await productService.createProduct(newProduct)
-        res.status(201).json({status: "success", message: "Product created", productAdded})
+        res.status(200).json({status: "success", message: "Product created", payload: productAdded})
     } catch (error){
         handleError(error, res)
     }
@@ -51,7 +51,7 @@ const updateProduct = async (req, res) =>{
         const productToUpdate = req.body
         const product = await productService.updateProduct(pid, productToUpdate)
         if(product === null) return res.status(400).json({ status: "error", message: 'Product not found'})
-        res.status(200).json({ status: "success", message: "Product updated", productToUpdate })
+        res.status(200).json({ status: "success", message: "Product updated", payload: productToUpdate })
     } catch (error) {
         if (error.name === 'CastError') return res.status(400).json({ status: "error", message: 'There is no product with that ID'})
         res.status(400).json({ status: "error", message: error.message})
