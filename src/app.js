@@ -29,6 +29,8 @@ import config from "./config/config.js"
 import logger from "./logger.js"
 import swaggerUiExpress from "swagger-ui-express"
 import swaggerJsdoc from "swagger-jsdoc"
+
+import multer from "multer"
 // Run servers
 const app = express()
 const httpServer = app.listen(8080, () => logger.info('Server up!'))
@@ -60,6 +62,8 @@ app.set('view engine', 'hbs')
 //Path for JS
 app.use('/realTimeProducts', express.static(__dirname + '/public'))
 app.use('/messages', express.static(__dirname + '/public'))
+app.use('/documents', express.static(__dirname + '/public'))
+
 //Routers
 app.use('/api/products', productsRouter)
 app.use('/api/carts', cartsRouter)

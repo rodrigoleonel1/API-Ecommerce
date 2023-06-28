@@ -12,13 +12,13 @@ router.get('/', getCarts)
 
 router.post('/:cid/product/:pid', isUser, addToCart)
 
-router.delete('/:cid/products/:pid', deleteCartProduct)
+router.delete('/:cid/products/:pid', deleteCartProduct);
 
-router.put('/:cid', updateCartProducts)
+router.put('/:cid', updateCartProducts);
 
-router.put('/:cid/products/:pid', updateProductQuantity)
+router.put('/:cid/products/:pid', updateProductQuantity);
 
-router.delete('/:cid', deleteCartProducts)
+router.delete('/:cid', deleteCartProducts);
 
 router.delete('/cart/:cid', deleteCart)
 

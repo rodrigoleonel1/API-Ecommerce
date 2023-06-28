@@ -7,6 +7,7 @@ import { JWT_COOKIE_NAME, JWT_PRIVATE_KEY } from './config/credentials.js'
 import passport from 'passport'
 import bcrypt from 'bcrypt'
 import { fakerES as faker } from '@faker-js/faker'
+import multer from 'multer'
 
 export default __dirname
 
@@ -59,3 +60,6 @@ export const generateProducts = () =>{
         thumbnail: faker.image.url()
     }
 }
+
+//Multer
+

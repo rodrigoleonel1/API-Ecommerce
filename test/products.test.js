@@ -9,26 +9,26 @@ describe('Testing Products Module', () =>{
     describe('Test POST and PUT endpoints', () =>{
         it('El endpoint POST/api/products debe crear un producto y el endpoint PUT/api/products/:pid debe actualizarlo', async () =>{
             const productMock = {      
-                title: "Producto 10A",
-                description: "Descripción del producto",
+                title: "Product",
+                description: "Product desciption",
                 code: faker.string.alphanumeric(6),
                 price: 10.999,
                 status: true,
                 stock: 10,
-                category: "xiaomi",
-                thumbnail: "https://http2.mlstatic.com/D_NQ_NP_873230-MLA50329307571_062022-O.webp"
+                category: "category",
+                thumbnail: "image.jpg"
             }
             const responsePOST = await requester.post('/api/products').send(productMock)
             expect(responsePOST._body.payload).to.have.property('_id')
 
             const productUpdateMock = {      
-                title: "Product Update 10A",
-                description: "Descripción del producto actualizado",
+                title: "Product Update",
+                description: "Product description update",
                 price: 99.999,
                 status: true,
                 stock: 20,
-                category: "xiaomi",
-                thumbnail: "https://http2.mlstatic.com/D_NQ_NP_873230-MLA50329307571_062022-O.webp"
+                category: "category",
+                thumbnail: "imageUpdate.jpg"
             }
             const responsePUT = await requester.put(`/api/products/${responsePOST._body.payload._id}`).send(productUpdateMock)
             expect(responsePUT._body.status).to.be.equal('success')

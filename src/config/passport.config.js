@@ -33,7 +33,8 @@ const initializePassport = () =>{
                 email,
                 age,
                 password: createHash(password),
-                cart: newCart._id
+                cart: newCart._id,
+                last_connection: Date.now()
             }
             
             if(newUser.email == config.ADMIN_EMAIL && isValidPassword(newUser, config.ADMIN_PASSWORD)){
@@ -58,6 +59,8 @@ const initializePassport = () =>{
                 return done(null, user)
             }
             if(!isValidPassword(user, password)) return done(null, false)
+            user.last_connection= Date.now()
+            await userModel.findOneAndUpdate({ email: username}, user)
             const token = generateToken(user)
             user.token = token
             

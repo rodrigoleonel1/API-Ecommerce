@@ -8,10 +8,10 @@ router.get('/', getProducts)
 
 router.get('/:pid', getProductById)
 
-router.post('/', createProduct)
+router.post('/', isPremiumOrAdmin, createProduct)
 
-router.put('/:pid', updateProduct)
+router.put('/:pid', isAdmin, updateProduct)
 
-router.delete('/:pid', deleteProduct)
+router.delete('/:pid', isPremiumOrAdmin, deleteProduct)
 
 export default router
