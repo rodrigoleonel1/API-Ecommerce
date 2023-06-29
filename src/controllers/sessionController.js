@@ -123,4 +123,18 @@ const passwordChangedView = async(req, res) =>{
     }
 }
 
-export { getRegisterView, createSession, failRegisterView, loginView, createLogin, failLoginView, closeSession, createLoginGithub, getCurrentSession, changePasswordView, changePassword, setNewPasswordView, setNewPassword, passwordChangedView } 
+//upload files view
+
+const uploadFileView = async(req, res) =>{
+    try {
+        const user = req.user
+        if(!user) return res.status(401).render('errors/base', { error: 'Inicie sesión para continuar' })
+        console.log(req.user)
+        const uid = req.user._id.toString()
+        res.render('sessions/uploadFiles', {uid})
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export { getRegisterView, createSession, failRegisterView, loginView, createLogin, failLoginView, closeSession, createLoginGithub, getCurrentSession, changePasswordView, changePassword, setNewPasswordView, setNewPassword, passwordChangedView, uploadFileView } 

@@ -1,0 +1,13 @@
+<div class="container d-flex flex-column align-items-center mt-5">
+    <h1>Subir archivos</h1>
+    <p>Al subir archivos se eliminaran los archivos que hayas subido anteriormente, asegurate de subir todos juntos!</p>
+    <form action="/api/users/premium/{{uid}}/documents" method="post" enctype="multipart/form-data" class="d-flex flex-column gap-3">
+        <div class="d-flex flex-column justify-content-between ">Foto de perfil: <input type="file" name="profile"/></div>
+        <div class="d-flex flex-column justify-content-between ">Foto de producto: <input type="file" name="product"/></div>
+        <div class="d-flex flex-column justify-content-between ">Identificación: <input type="file" name="identification"/></div>
+        <div class="d-flex flex-column justify-content-between ">Comprobante de domicilio: <input type="file" name="domicile"/></div>
+        <div class="d-flex flex-column justify-content-between ">Comprobante de estado de cuenta; <input type="file" name="accStatus"/></div>
+        <input class="btn btn-primary" type="submit" value="Subir archivos">
+    </form>
+    <a href="http://localhost:8080/products"><button class="btn btn-primary mt-4">Regresar a productos</button></a>
+</div>

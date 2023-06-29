@@ -11,7 +11,7 @@ const storage = multer.diskStorage({
             file.originalname  = "product-"+file.originalname
             cb(null, (`${__dirname}` + '/public/products'))
         }
-        if(file.fieldname == 'document'){
+        if(file.fieldname == 'identification' || file.fieldname == 'domicile' || file.fieldname == 'accStatus'){
             cb(null, (`${__dirname}` + '/public/documents'))
         }
     },
