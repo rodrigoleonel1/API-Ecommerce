@@ -6,18 +6,18 @@
 
 - API para manejar productos.
 - API para manejar usuarios.
-- API para manejar autenticación (login y uso de JWT)
-- API para manejar carrito de compras
-- Handlebars como motor de vistas
+- API para manejar autenticación (login y uso de JWT).
+- API para manejar carrito de compras.
+- Handlebars como motor de vistas.
 - MongoDB para persistencia de datos.
 - Registro de logs con winston.
 - Websockets para la creacion de un chat en tiempo real.
 - Documentacion de los endpoints de "products" y "cart" con Swagger en el endpoint "/api/docs"
 - Proyecto en capas.
-  - routes: capa de rutas
-  - controllers: capa de controladores
+  - routes: capa de rutas.
+  - controllers: capa de controladores.
   - persistence: capa de persistencia con implementación de repository, dto y dao.
-  - middlewares: capa de middlewares para manejo de errores, subida de archivos con multer y autenticacion de sesión con passport
+  - middlewares: capa de middlewares para manejo de errores, subida de archivos con multer y autenticacion de sesión con passport.
 
 ## Dependencias 
 
@@ -62,14 +62,14 @@ Inizializa el proyecto con node
 
 ## Variables de entorno necesarias
 
-- PORT: Puerto para correr el servidor de manera local. Default: "8080"
-- MONGO_URL: URL de Mongo Atlas o Mongo Compass. Default: "mongodb://localhost:27017/ecommerce"
-- ADMIN_EMAIL: Definir email para crear usuario admin
-- ADMIN_PASSWORD: Definir password para crear usuario admin
-- PERSISTENCE: Tipo de persistencia 
-- ENVIRONMENT: Tipo de entorno de desarrollo (PROD || DEV) 
-- MAIL_USER: Definir email para enviar mails
-- MAIL_PASS: Definir pass del email para enviar mails
-- JWT_PRIVATE_KEY: Definir private key para JWT
-- JWT_COOKIE_NAME: Definir nombre de cookie para JWT
-- SESSION_SECRET: Definir secret para las session
+- PORT: Puerto para correr el servidor de manera local. Default: "8080".
+- MONGO_URL: URL de Mongo Atlas o Mongo Compass. Default: "mongodb://localhost:27017/ecommerce".
+- ADMIN_EMAIL: Definir email para crear usuario admin.
+- ADMIN_PASSWORD: Definir password para crear usuario admin.
+- PERSISTENCE: Tipo de persistencia.
+- ENVIRONMENT: Tipo de entorno de desarrollo. (PROD || DEV) 
+- MAIL_USER: Definir email para enviar mails.
+- MAIL_PASS: Definir pass del email para enviar mails.
+- JWT_PRIVATE_KEY: Definir private key para JWT.
+- JWT_COOKIE_NAME: Definir nombre de cookie para JWT.
+- SESSION_SECRET: Definir secret para la sesión.

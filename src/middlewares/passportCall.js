@@ -6,7 +6,15 @@ export const passportCall = (strategy, role) =>{
             if(err) {
                 return next(err)
             }
-            if(!req.user){
+            if(!req.user ){
+                return res.status(401).render('errors/base', {
+                    error: 'Debes iniciar sesión para acceder a esta ruta.',
+                    title: 'Ecommerce | Error',   
+                    route: 'login',
+                    page: 'log-in'    
+                })
+            }
+            if(!user){
                 return res.status(401).render('errors/base', {
                     error: 'Debes iniciar sesión para acceder a esta ruta.',
                     title: 'Ecommerce | Error',   

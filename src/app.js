@@ -22,6 +22,7 @@ import usersRouter from './routers/users.router.js';
 import viewsRouter from './routers/views.router.js';
 import loggerRouter from './routers/logger.router.js';
 import { messageService } from './services/index.repository.js';
+import MongoStore from "connect-mongo";
 
 const app = express();
 const PORT = config.PORT||8080;
@@ -36,7 +37,15 @@ io.on('connection', socket =>{
     })
 })
 
-app.use(session({secret: config.SESSION_SECRET, resave: true, saveUninitialized: true}));
+app.use(session({
+    store: MongoStore.create({
+        mongoUrl: config.MONGO_URL,
+        dbName: "session"
+    }),
+    secret: config.SESSION_SECRET, 
+    resave: true, 
+    saveUninitialized: true
+}));
 initializePassport();
 app.use(passport.initialize());
 app.use(passport.session());
