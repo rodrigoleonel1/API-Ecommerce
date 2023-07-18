@@ -14,6 +14,7 @@ import __dirname from './utils.js';
 import logger from './helpers/logger.js';
 import { specs } from './helpers/swagger.js';
 import errorHandler from './middlewares/error.js';
+import { messageService } from './services/index.repository.js';
 //Routers imports 
 import productsRouter from './routers/products.router.js';
 import cartsRouter from './routers/carts.router.js';
@@ -21,8 +22,8 @@ import sessionsRouter from './routers/sessions.router.js';
 import usersRouter from './routers/users.router.js';
 import viewsRouter from './routers/views.router.js';
 import loggerRouter from './routers/logger.router.js';
-import { messageService } from './services/index.repository.js';
-import MongoStore from "connect-mongo";
+
+
 
 const app = express();
 const PORT = config.PORT||8080;
@@ -38,10 +39,6 @@ io.on('connection', socket =>{
 })
 
 app.use(session({
-    store: MongoStore.create({
-        mongoUrl: config.MONGO_URL,
-        dbName: "session"
-    }),
     secret: config.SESSION_SECRET, 
     resave: true, 
     saveUninitialized: true
