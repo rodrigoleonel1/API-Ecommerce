@@ -62,14 +62,14 @@ Inizializa el proyecto con node
 
 ## Variables de entorno necesarias
 
-PORT: Puerto para correr el servidor de manera local. Default: "8080"
-MONGO_URL: URL de Mongo Atlas o Mongo Compass. Default: "mongodb://localhost:27017/ecommerce"
-ADMIN_EMAIL: Definir email para crear usuario admin
-ADMIN_PASSWORD: Definir password para crear usuario admin
-PERSISTENCE: Tipo de persistencia 
-ENVIRONMENT: Tipo de entorno de desarrollo (PROD || DEV) 
-MAIL_USER: Definir email para enviar mails
-MAIL_PASS: Definir pass del email para enviar mails
-JWT_PRIVATE_KEY: Definir private key para JWT
-JWT_COOKIE_NAME: Definir nombre de cookie para JWT
-SESSION_SECRET: Definir secret para las session
+- PORT: Puerto para correr el servidor de manera local. Default: "8080"
+- MONGO_URL: URL de Mongo Atlas o Mongo Compass. Default: "mongodb://localhost:27017/ecommerce"
+- ADMIN_EMAIL: Definir email para crear usuario admin
+- ADMIN_PASSWORD: Definir password para crear usuario admin
+- PERSISTENCE: Tipo de persistencia 
+- ENVIRONMENT: Tipo de entorno de desarrollo (PROD || DEV) 
+- MAIL_USER: Definir email para enviar mails
+- MAIL_PASS: Definir pass del email para enviar mails
+- JWT_PRIVATE_KEY: Definir private key para JWT
+- JWT_COOKIE_NAME: Definir nombre de cookie para JWT
+- SESSION_SECRET: Definir secret para las session
