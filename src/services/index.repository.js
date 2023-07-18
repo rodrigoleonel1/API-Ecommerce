@@ -1,12 +1,16 @@
-import CartsDao from "../dao/mongo/carts.mongo.js";
-import CartsRepository from "./repositories/carts.repository.js";
-import ProductsRepository from "./repositories/products.repository.js";
-import ProductsDao from '../dao/mongo/products.mongo.js'
-import UsersRepository from "./repositories/users.repository.js";
-import UsersDao from "../dao/mongo/users.dao.js";
+import CartsRepository from '../repository/carts.repository.js';
+import CartsMongo from '../dao/mongo/carts.mongo.js';
+import ProductsRepository from '../repository/products.repository.js';
+import ProductsMongo from '../dao/mongo/products.mongo.js';
+import UsersRepository from '../repository/users.repository.js';
+import UsersMongo from '../dao/mongo/users.mongo.js';
+import MessagesRepository from '../repository/messages.repository.js';
+import MessagesMongo from '../dao/mongo/messages.mongo.js';
 
-const cartService = new CartsRepository(new CartsDao)
-const productService = new ProductsRepository(new ProductsDao)
-const userService = new UsersRepository(new UsersDao)
+export const userService = new UsersRepository(new UsersMongo);
+export const cartService = new CartsRepository(new CartsMongo);
+export const productService = new ProductsRepository(new ProductsMongo);
+export const messageService = new MessagesRepository(new MessagesMongo);
 
-export { cartService, productService, userService }
+
+

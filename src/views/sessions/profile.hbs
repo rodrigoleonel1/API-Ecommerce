@@ -1,0 +1,70 @@
+<div class="container-fluid d-flex justify-content-between align-items-center bg-primary text-white p-4 px-5">
+    <a href="/products" class="btn btn-primary">E-Commerce</a>
+    <div class="d-flex align-items-center gap-2">
+        <a href="/profile" class="btn btn-primary">Mi perfil</a>
+        <a href="/products" class="btn btn-primary">Productos</a>
+        <a href="/carts/{{user.cart}}" class="btn btn-primary">Mi carrito</a>
+        <a href="/chat" class="btn btn-primary">Chat</a>
+    </div>
+    <a href="/api/sessions/logout" class="btn btn-primary">Logout</a>  
+</div>
+<div class="container-fluid d-flex justify-content-center align-items-center bg-black text-white p-3 mb-5">
+    <h1>Mi perfil</h1>
+</div>
+<div class="container d-flex align-items-center justify-content-between">
+    <div class="container d-flex flex-column justify-content-center align-items-center gap-3">
+        <img style="border-radius: 50%; height: 250px; width: 250px; object-fit: cover;" class="border border-primary" src="img/profile.jpg" alt="profile-pic" id="profilePic">
+        <div class="d-flex justify-content-center m-3 gap-5">
+            <div>
+                <h3>Información personal</h3>
+                <p>Nombre: {{user.first_name}} {{user.last_name}}</p>
+                <p>Email: {{user.email}}</p>
+                <p>Edad: {{user.age}}</p>
+            </div>
+            <div>
+                <h3>Información de cuenta</h3>
+                <p>ID de usuario: {{user._id}}</p>
+                <p>Rol: {{user.role}} </p>
+                <button id="changeRoleBtn" onclick="changeRole('{{user._id}}')" class="btn btn-primary">Cambiar rol</button>
+                <a id="panelBtn" style="display: none;" href="/panel" class="btn btn-danger">Acceder al panel de administrador</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container d-flex flex-column align-items-center my-5">
+    <h1>Subir archivos</h1>
+    <p>Lo archivos que ya tengas subidos apareceran marcados a la derecha de cada uno con un "✔️"!</p>
+    <form style="width: 70%;" action="/api/users/{{user._id}}/documents" method="post" enctype="multipart/form-data" class="d-flex flex-column gap-3 mb-2">
+        <div class="input-group mb-3">
+            <label class="input-group-text">Foto de perfil</label>
+            <input type="file" class="form-control" name="profile">
+            <div class="input-group-text">
+                {{#if user.documents.profile_pic.status}}✔️{{else}}❌{{/if}}
+            </div>
+        </div>
+        <div class="input-group mb-3">
+            <label class="input-group-text">Identificación</label>
+            <input type="file" class="form-control" name="identification">
+            <div class="input-group-text">
+                {{#if user.documents.identification.status}}✔️{{else}}❌{{/if}}
+            </div>
+        </div>
+        <div class="input-group mb-3">
+            <label class="input-group-text">Comprobante de domicilio</label>
+            <input type="file" class="form-control" name="domicile">
+            <div class="input-group-text">
+                {{#if user.documents.domicile.status}}✔️{{else}}❌{{/if}}
+            </div>            
+        </div>
+        <div class="input-group mb-3">
+            <label class="input-group-text">Comprobante de estado de cuenta</label>
+            <input type="file" class="form-control" name="accStatus">
+            <div class="input-group-text">
+                {{#if user.documents.acc_status.status}}✔️{{else}}❌{{/if}}
+            </div>            
+        </div>                        
+        <input class="btn btn-primary" type="submit" value="Subir archivos">
+    </form>
+    <button style="width: 70%;" onclick="deleteDocuments('{{user._id}}')" class="btn btn-primary mb-4">Eliminar archivos</button>
+</div>
+<script src="/js/profile.js"></script>

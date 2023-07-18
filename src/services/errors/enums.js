@@ -1,7 +1,8 @@
-const Errors = {
-    ROUTING_ERROR: 1,
-    INVALID_TYPES_ERROR: 2,
-    DATABASES_ERROR: 3
+const EErros = {
+    BAD_REQUEST: 400,
+    UNAUTHORIZED: 401,
+    CONFLICT: 409,
+    INTERNAL_SERVER_ERROR: 500,
 }
 
-export default Errors
+export default EErros;

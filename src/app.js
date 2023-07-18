@@ -1,114 +1,57 @@
 //Dependencies
-import express from "express"
+import express from 'express';
 import handlebars from "express-handlebars"
+import session from 'express-session';
+import passport from 'passport';
+import cookieParser from 'cookie-parser';
+import swaggerUiExpress from 'swagger-ui-express';
 import { Server } from "socket.io"
-import mongoose from "mongoose"
-import session from 'express-session'
-import passport from "passport";
-import initializePassport from "./config/passport.config.js";
-import cookieParser from "cookie-parser"
-//Utils
-import __dirname, { passportCall } from "./utils.js"
-//Routers
-import productsRouter from './router/products.router.js'
-import cartsRouter from './router/carts.router.js'
-import homeRouter from './router/home.router.js'
-import realTimeProductsRouter from './router/realTimeProducts.router.js'
-import messagesRouter from './router/messages.router.js'
-import productsViewRouter from './router/products.view.router.js'
-import cartViewRouter from './router/cart.view.router.js'
-import sessionsRouter from './router/session.router.js'
-import mockingRouter from './router/mocking.router.js'
-import loggerRouter from './router/logger.router.js'
-import usersRouter from './router/users.router.js'
-//Models
-import productModel from "./dao/mongo/models/products.model.js"
-import messagesModel from "./dao/mongo/models/messages.models.js"
-//Config 
-import config from "./config/config.js"
-import logger from "./logger.js"
-import swaggerUiExpress from "swagger-ui-express"
-import swaggerJsdoc from "swagger-jsdoc"
+//App imports
+import './dao/mongo/connection.mongo.js'
+import config from './config/config.js';
+import initializePassport from './config/passport.js';
+import __dirname from './utils.js';
+import logger from './helpers/logger.js';
+import { specs } from './helpers/swagger.js';
+import errorHandler from './middlewares/error.js';
+//Routers imports 
+import productsRouter from './routers/products.router.js';
+import cartsRouter from './routers/carts.router.js';
+import sessionsRouter from './routers/sessions.router.js';
+import usersRouter from './routers/users.router.js';
+import viewsRouter from './routers/views.router.js';
+import loggerRouter from './routers/logger.router.js';
+import { messageService } from './services/index.repository.js';
 
-import multer from "multer"
-// Run servers
-const app = express()
-const httpServer = app.listen(8080, () => logger.info('Server up!'))
+const app = express();
+const PORT = config.PORT||8080;
+const httpServer = app.listen(PORT, () => logger.info(`Server up at PORT ${PORT}!`));
 const io = new Server(httpServer)
 
-//Uri mongoose
-const uri = config.MONGO_URL
-
-//Session
-app.use(session({
-    secret: 'c0d3r',
-    resave: true,
-    saveUninitialized: true
-}))
-
-initializePassport()
-app.use(passport.initialize())
-app.use(passport.session())
-
-//Config for express
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
-//Cookie parser
-app.use(cookieParser())
-//Handlebars
-app.engine('hbs', handlebars.engine({extname: '.hbs', defaultLayout: 'index.hbs',}))
-app.set('views', __dirname + '/views')
-app.set('view engine', 'hbs')
-//Path for JS
-app.use('/realTimeProducts', express.static(__dirname + '/public'))
-app.use('/messages', express.static(__dirname + '/public'))
-app.use('/documents', express.static(__dirname + '/public'))
-
-//Routers
-app.use('/api/products', productsRouter)
-app.use('/api/carts', cartsRouter)
-app.use('/', homeRouter)
-app.use('/realTimeProducts', realTimeProductsRouter)
-app.use('/messages', messagesRouter)
-app.use('/products', passportCall('jwt'), productsViewRouter)
-app.use('/cart', cartViewRouter)
-app.use('/', sessionsRouter)
-app.use('/mockingproducts', mockingRouter)
-app.use('/loggerTest', loggerRouter)
-app.use('/api/users', usersRouter)
-
-//Socket.io
-io.on('connection', async socket =>{
-    console.log('Nuevo cliente conectado!')
-    let products = await productModel.find().lean().exec()
-    socket.emit('productos', products)
-})
 io.on('connection', socket =>{
     socket.on('message', async data =>{
-        const newMessage = data
-        const messageGenerated = new messagesModel(newMessage)
-        await messageGenerated.save()
-        let messages = await messagesModel.find().lean().exec()
+        await messageService.create(data)
+        const messages = await messageService.getAll()
         io.emit('logs', messages)
     })
 })
 
-//Swagger
-
-const swaggerOptions = {
-    definition: {
-        openapi: '3.0.1',
-        info: {
-            title: 'Documentación API Ecommerce',
-            description: 'API de Ecommerce para CoderHouse'
-        }
-    },
-    apis:[`${__dirname}/docs/**/*.yaml`]
-}
-
-const specs = swaggerJsdoc(swaggerOptions)
-app.use('/api/docs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs)) 
-
-//Mongoose
-mongoose.set('strictQuery', false)
-mongoose.connect(uri)
+app.use(session({secret: config.SESSION_SECRET, resave: true, saveUninitialized: true}));
+initializePassport();
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(express.json());
+app.use(express.urlencoded({extended: true}));
+app.use(cookieParser());
+app.engine('hbs', handlebars.engine({extname: '.hbs', defaultLayout: 'index.hbs'}));
+app.set('views', __dirname + '/views');
+app.set('view engine', 'hbs');
+app.use(express.static(__dirname + "/public"))
+app.use('/api/products', productsRouter);
+app.use('/api/carts', cartsRouter);
+app.use('/api/sessions', sessionsRouter);
+app.use('/api/users', usersRouter);
+app.use('/loggerTest', loggerRouter);
+app.use('/', viewsRouter);
+app.use('/api/docs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs)); 
+app.use(errorHandler);

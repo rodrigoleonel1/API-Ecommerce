@@ -1,6 +1,5 @@
-import mongoose from "mongoose" 
-
-const userCollection = 'users'
+import mongoose from "mongoose";
+const userCollection = 'users';
 
 const userSchema = new mongoose.Schema({
     first_name: String,
@@ -18,26 +17,17 @@ const userSchema = new mongoose.Schema({
             ref: 'carts'
         }
     ],
-    documents: {
-        type: [{
-            name: {
-                type: String,
-                required: true
-            },
-            reference: {
-                type: String,
-                required: true
-            }
-        }],
-        default: []
-    },
     last_connection: { 
         type: Date, 
         required: true 
+    },
+    documents: {
+        type: Object,
+        required: true
     }
 })
 
-mongoose.set("strictQuery", false)
-const userModel = mongoose.model(userCollection, userSchema)
+mongoose.set("strictQuery", false);
+const userModel = mongoose.model(userCollection, userSchema);
 
-export default userModel
+export default userModel;

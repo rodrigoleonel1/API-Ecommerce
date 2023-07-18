@@ -1,10 +1,66 @@
-<h1>Carrito ID: {{cart._id}}</h1>
-<div>
-    <p>Productos en el carrito:</p>
-    {{#each cart.products}}
-    <ul>
-        <li>Product ID: {{this.product}}</li>
-        <li>Product quantity: {{this.quantity}}</li>
-    </ul>
-    {{/each}}
+<div class="container-fluid d-flex justify-content-between align-items-center bg-primary text-white p-4 px-5">
+    <a href="/products" class="btn btn-primary">E-Commerce</a>
+    <div class="d-flex align-items-center gap-2">
+        <a href="/profile" class="btn btn-primary">Mi perfil</a>
+        <a href="/products" class="btn btn-primary">Productos</a>
+        <a href="/carts/{{user.cart}}" class="btn btn-primary">Mi carrito</a>
+        <a href="/chat" class="btn btn-primary">Chat</a>
+    </div>
+    <a href="/api/sessions/logout" class="btn btn-primary">Logout</a>  
 </div>
+<div class="container-fluid d-flex justify-content-center align-items-center bg-black text-white p-3 mb-5">
+    <h1>Mi carrito</h1>
+</div>
+{{#if products.length}}
+    <div class="container d-flex flex-column align-items-center">
+        <table class="table align-middle text-center">
+        <thead>
+            <tr>
+            <th scope="col">Producto</th>
+            <th scope="col">Nombre</th>
+            <th scope="col">Cantidad de unidades</th>
+            <th scope="col">Precio por unidad</th>
+            <th scope="col">Eliminar del carrito</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each products}}
+                <tr>
+                <th scope="row"><img  class="col" style="max-width: 100px;" src="{{this.thumbnail}}" alt="{{this.title}}"></th>
+                <td>{{this.title}}</td>
+                <td>{{this.quantity}}</td>
+                <td>${{this.price}}</td>
+                <td><button onclick="deleteProduct('{{this.cid}}', '{{this._id}}')" class="btn btn-danger">Eliminar</button></td>
+                </tr>
+            {{/each}}
+        </tbody>
+        </table>          
+        <div class="gap-4 mt-4">
+            <button onclick="clearCart('{{cid}}')" class="btn btn-primary">Vaciar carrito</button>
+            <button onclick="purchase('{{cid}}')" class="btn btn-primary">Realizar compra</button>
+            <button data-bs-toggle="modal" data-bs-target="#modal" class="btn btn-primary">❕</button>
+        </div>
+    </div>
+{{else}}
+    <div class="container d-flex flex-column align-items-center justify-content-center h-50">
+        <h1 style="max-width: 600px; text-align: center;">Tú carrito se encuentra vacío, agrega productos para poder visualizarlos aquí!</h1>
+    </div>
+{{/if}}
+<!-- Modal -->
+<div class="modal fade" id="modal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="modalLabel">Información de compra</h1>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				Al presionar el botón de "Realizar compra" se generará tu ticket de compra, el cual llegara a tu email con los datos de la compra.
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
+			</div>
+		</div>
+	</div>
+</div>
+<script src="/js/carts.js"></script>

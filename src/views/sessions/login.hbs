@@ -1,13 +1,21 @@
-<div class="container d-flex flex-column align-items-center">
-    <h1>Login de usuario</h1>
-    <form class="d-flex flex-column gap-1" action="/api/sessions/login" method="post">
-        Email: <input type="email" name="email" placeholder="Ingrese su email" required><br>
-        Password: <input type="password" name="password" placeholder="Ingrese su contraseña" required>
-        <a href="http://localhost:8080/changePassword">Restablecer contraseña</a><br>
-        <div class="d-flex align-items-center gap-1">
+<div class="w-100 d-flex align-items-center justify-content-center">
+    <div class="container d-flex flex-column align-items-center justify-content-center">
+        <h1 class="mb-5">Ecommerce | Log-in</h1>
+        <form style="width: 60%;" class="d-flex flex-column mb-2" action="/api/sessions/login" method="post">
+            <div class="input-group mb-3">
+                <span class="input-group-text">Email</span>
+                <input type="email" name="email" class="form-control" placeholder="Ingrese su email" aria-label="email" aria-describedby="basic-addon1" required>
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text">Password</span>
+                <input type="password" name="password" class="form-control" placeholder="Ingrese su contraseña" aria-label="password" aria-describedby="basic-addon1" required>
+            </div>
             <input class="btn btn-primary" type="submit" value="Iniciar sesión">
-            <a href="http://localhost:8080/register"><input class="btn btn-primary" type="button" value="Registrate"></a>
+        </form>
+        <div style="width: 60%;" class="row gap-2">
+            <a href="http://localhost:8080/register" class="btn btn-outline-primary col">Registrate</a>
+            <a href="/api/sessions/github" class="btn btn-outline-primary col">Acceder con Github</a>
         </div>
-    </form>
-    <a href="/api/sessions/github"><button class="btn btn-primary mt-1">Entrar con github</button></a>
+    </div>
+    <img style="height: 100vh; object-fit: cover;" class="w-50" src="/img/banner.jpg" alt="banner-ecommerce">
 </div>

@@ -1,41 +1,37 @@
-<div class="container d-flex flex-row align-items-center justify-content-between">
-    <a href="http://localhost:8080/upload" class="btn btn-primary">Subir archivos</a>
-    <h1>Bienvenido {{user.first_name}} {{user.last_name}}</h1> 
+<div class="container-fluid d-flex justify-content-between align-items-center bg-primary text-white p-4 px-5">
+    <a href="/products" class="btn btn-primary">E-Commerce</a>
     <div class="d-flex align-items-center gap-2">
-        Rol: {{user.role}}<a href="http://localhost:8080/api/sessions/logout"><input class="btn btn-primary" type="button" value="Logout"></a>  
-        {{#if user.flag }}
-            <a href="http://localhost:8080/api/users/premium/{{user._id}} "><input class="btn btn-primary" type="button" value="Hacerse premium"></a> 
-        {{else}}
-            <a href="http://localhost:8080/api/users/premium/{{user._id}}"><input class="btn btn-primary" type="button" value="Hacerse user"></a> 
-        {{/if}}
+        <a href="/profile" class="btn btn-primary">Mi perfil</a>
+        <a href="/products" class="btn btn-primary">Productos</a>
+        <a href="/carts/{{user.cart}}" class="btn btn-primary">Mi carrito</a>
+        <a href="/chat" class="btn btn-primary">Chat</a>
     </div>
+    <a href="/api/sessions/logout" class="btn btn-primary">Logout</a>  
 </div>
-<div class="container">
-    <h2>Productos</h2>
+<div class="container-fluid d-flex justify-content-center align-items-center bg-black text-white p-3 mb-4">
+    <h1>Bienvenido {{user.first_name}}!</h1>
+</div>
+<div class="container pb-4">
     {{#each products.docs}}
         <ul class="d-flex flex-row align-items-center justify-content-center gap-4">
-            <div>
+            <div style="min-width: 500px;" class="d-flex justify-content-center">
                 <img src="{{this.thumbnail}}" alt="{{this.title}}">
             </div>
             <div>
-                <div >
                 <li>Title: {{this.title}}</li>
                 <li>ID: {{this._id}}</li>
-                <li>Description: {{this.description}}</li>
+                <li style="max-width: 600px;">Description: {{this.description}}</li>
                 <li>Code: {{this.code}}</li>
                 <li>${{this.price}}</li>
                 <li>Stock: {{this.stock}}</li>
                 <li>Category: {{this.category}}</li>
-                <div>
-                    <form class="mt-4 d-flex flex-row align-items-center justify-content-center gap-4">
-                        <input class="btn btn-primary" type="submit" value="Agregar al carrito">
-                    </form>
+                <div class="mt-4 d-flex flex-row align-items-center justify-content-center gap-4">
+                    <button class="btn btn-primary" onclick="addToCart('{{this._id}}', '{{this.cid}}')">Agregar al carrito</button>
                 </div>
-            </div>
             </div>
         </ul>
     {{/each}}
-    <div class="d-flex flex-row align-items-center justify-content-center mb-4">
+    <div class="d-flex flex-row align-items-center justify-content-center">
         {{#if products.hasPrevPage }}
             <a href="{{products.prevLink}}" class="btn btn-primary">Anterior página</a>
         {{/if}}
@@ -44,3 +40,4 @@
         {{/if}}
     </div>
 </div>
+<script src="js/products.js"></script>

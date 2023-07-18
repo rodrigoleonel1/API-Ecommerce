@@ -1,8 +1,27 @@
-import logger from "../logger.js"
+import EErros from "../services/errors/enums.js";
+import logger from "../helpers/logger.js";
 
-export default function handleError(error, res){
-    logger.error(error.message)
-    if (error.cause){logger.error(error.cause)}
-    return res.status(400).json({ status: "error", error: error.name})
+export default (error, req, res, next) =>{
+    logger.error(error.message);
+    if(error.name == "CastError"){
+        error.code = EErros.BAD_REQUEST;
+        error.message = "The id is not valid";
+    }
+    switch (error.code){
+        case EErros.BAD_REQUEST:
+            res.status(error.code).json({ status: "error", error: error.name, message: error.message});
+            break; 
+        case EErros.INTERNAL_SERVER_ERROR:
+            res.status(error.code).json({ status: "error", error: error.name, message: error.message});
+            break;                 
+        case EErros.UNAUTHORIZED:
+            res.status(error.code).json({ status: "error", error: error.name, message: error.message});
+            break; 
+        case EErros.CONFLICT:
+            res.status(error.code).json({ status: "error", error: error.name, message: error.message});
+            break; 
+        default:
+            res.status(444).json({ status: "error", error: error.name});
+            break;
+    }
 }
-

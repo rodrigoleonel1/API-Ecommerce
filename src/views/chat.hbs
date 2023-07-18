@@ -1,0 +1,30 @@
+<div class="container-fluid d-flex justify-content-between align-items-center bg-primary text-white p-4 px-5">
+    <a href="/products" class="btn btn-primary">E-Commerce</a>
+    <div class="d-flex align-items-center gap-2">
+        <a href="/profile" class="btn btn-primary">Mi perfil</a>
+        <a href="/products" class="btn btn-primary">Productos</a>
+        <a href="/carts/{{user.cart}}" class="btn btn-primary">Mi carrito</a>
+        <a href="/chat" class="btn btn-primary">Chat</a>
+    </div>
+    <a href="/api/sessions/logout" class="btn btn-primary">Logout</a>  
+</div>
+<div class="container-fluid d-flex justify-content-center align-items-center bg-black text-white p-3 mb-4">
+    <h1>Chat E-Commerce</h1>
+</div>
+<div id="chatContainer" class="container d-flex flex-column justify-content-center align-items-center mt-5">
+    <div style="height: 600px; width: 800px;" class="overflow-y-auto border border-bottom-0 p-3" id="messageLogs">
+        <div id="chatPlaceholder" class="d-flex w-100 h-100 justify-content-center align-items-center">
+            Cuando tú o alguien en el chat envie un mensaje se cargaran los mensajes anteriores...
+        </div>
+    </div>
+    <div style="width: 800px;" class="input-group">
+        <span class="input-group-text gap-1" id="basic-addon1">
+            <img id='chatAvatar'style="border-radius: 50%; height: 25px; object-fit: cover;" src="/img/profile.jpg" alt="chat-avatar">
+            <div id="userName">{{user.first_name}}</div>
+        </span>
+        <input id="chatBox" type="text" class="form-control" placeholder="Escriba un mensaje..." aria-label="Message" aria-describedby="basic-addon1">
+        <button class="btn btn-primary" type="button" id="sendMsgBtn">Enviar</button>
+    </div>
+</div>
+<script src="/socket.io/socket.io.js"></script>
+<script src="js/chat.js"></script>
