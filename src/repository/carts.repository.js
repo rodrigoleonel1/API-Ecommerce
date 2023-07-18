@@ -15,7 +15,7 @@ export default class CartsRepository extends GenericRepository{
 
     addProduct = async (cid, pid, user) =>{
         const getProduct = await productService.getById(pid);
-        if(user.role == 'premium' && getProduct.owner !== user._id){
+        if(user.role == 'premium' && getProduct.owner == user._id){
             CustomError.createError({
                 name: "Unauthorized",
                 message: "You do not have the necessary permissions to do this.",

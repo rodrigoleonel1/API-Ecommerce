@@ -26,7 +26,7 @@ const getProductById = async (req, res, next) =>{
 const createProduct = async (req, res, next) =>{
     try {
         const product = req.body;
-        if(req.user) product.owner = req.user._id;
+        if(req.user?.role == 'premium') product.owner = req.user._id;
         const productCreated = await productService.create(product);
         res.status(200).json({status: "success", message: "Product created", payload: productCreated});
     } catch (error) {
