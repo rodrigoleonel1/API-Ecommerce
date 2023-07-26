@@ -9,7 +9,7 @@ const swaggerOptions = {
             description: 'API de Ecommerce para CoderHouse'
         }
     },
-    apis:[`${__dirname}/docs/**/*.yaml`]
+    apis: [`${__dirname}/docs/**/*.yaml`]
 }
 
 export const specs = swaggerJsdoc(swaggerOptions);

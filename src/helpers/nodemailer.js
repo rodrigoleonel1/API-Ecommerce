@@ -2,7 +2,7 @@ import nodemailer from 'nodemailer'
 import config from '../config/config.js'
 
 export default class Mail {
-    constructor(){
+    constructor() {
         this.transport = nodemailer.createTransport({
             service: 'gmail',
             port: 587,
@@ -13,7 +13,7 @@ export default class Mail {
         })
     }
 
-    send = async(user, subject, html)=>{
+    send = async (user, subject, html) => {
         const result = await this.transport.sendMail({
             from: config.MAIL_USER,
             to: user,

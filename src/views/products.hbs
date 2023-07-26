@@ -6,37 +6,38 @@
         <a href="/carts/{{user.cart}}" class="btn btn-primary">Mi carrito</a>
         <a href="/chat" class="btn btn-primary">Chat</a>
     </div>
-    <a href="/api/sessions/logout" class="btn btn-primary">Logout</a>  
+    <a href="/api/sessions/logout" class="btn btn-primary">Logout</a>
 </div>
 <div class="container-fluid d-flex justify-content-center align-items-center bg-black text-white p-3 mb-4">
     <h1>Bienvenido {{user.first_name}}!</h1>
 </div>
 <div class="container pb-4">
     {{#each products.docs}}
-        <ul class="d-flex flex-row align-items-center justify-content-center gap-4">
-            <div style="min-width: 500px;" class="d-flex justify-content-center">
-                <img src="{{this.thumbnail}}" alt="{{this.title}}">
+    <ul class="d-flex flex-row align-items-center justify-content-center gap-4">
+        <div style="min-width: 500px;" class="d-flex justify-content-center">
+            <img src="{{this.thumbnail}}" alt="{{this.title}}">
+        </div>
+        <div>
+            <li>Title: {{this.title}}</li>
+            <li>ID: {{this._id}}</li>
+            <li style="max-width: 600px;">Description: {{this.description}}</li>
+            <li>Code: {{this.code}}</li>
+            <li>${{this.price}}</li>
+            <li>Stock: {{this.stock}}</li>
+            <li>Category: {{this.category}}</li>
+            <div class="mt-4 d-flex flex-row align-items-center justify-content-center gap-4">
+                <button class="btn btn-primary" onclick="addToCart('{{this._id}}', '{{this.cid}}')">Agregar al
+                    carrito</button>
             </div>
-            <div>
-                <li>Title: {{this.title}}</li>
-                <li>ID: {{this._id}}</li>
-                <li style="max-width: 600px;">Description: {{this.description}}</li>
-                <li>Code: {{this.code}}</li>
-                <li>${{this.price}}</li>
-                <li>Stock: {{this.stock}}</li>
-                <li>Category: {{this.category}}</li>
-                <div class="mt-4 d-flex flex-row align-items-center justify-content-center gap-4">
-                    <button class="btn btn-primary" onclick="addToCart('{{this._id}}', '{{this.cid}}')">Agregar al carrito</button>
-                </div>
-            </div>
-        </ul>
+        </div>
+    </ul>
     {{/each}}
     <div class="d-flex flex-row align-items-center justify-content-center">
         {{#if products.hasPrevPage }}
-            <a href="{{products.prevLink}}" class="btn btn-primary">Anterior página</a>
+        <a href="{{products.prevLink}}" class="btn btn-primary">Anterior página</a>
         {{/if}}
         {{#if products.hasNextPage}}
-            <a href="{{products.nextLink}}" class="btn btn-primary">Siguiente página</a>
+        <a href="{{products.nextLink}}" class="btn btn-primary">Siguiente página</a>
         {{/if}}
     </div>
 </div>

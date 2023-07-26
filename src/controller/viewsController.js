@@ -1,12 +1,12 @@
 import { cartService, messageService, productService, userService } from '../services/index.repository.js';
 
 // GET/
-const getHome = async (req, res, next) =>{
+const getHome = async (req, res, next) => {
     res.redirect('/login')
 }
 
 // GET/chat
-const getChat = async (req, res, next) =>{
+const getChat = async (req, res, next) => {
     const user = req.user._doc;
     res.render('chat', {
         user,
@@ -15,21 +15,21 @@ const getChat = async (req, res, next) =>{
 }
 
 // GET/login
-const loginView = (req, res) =>{
+const loginView = (req, res) => {
     res.render('sessions/login', {
         title: 'E-commerce | Log-in'
     });
 }
 
 // GET/register
-const registerView = (req, res) =>{
+const registerView = (req, res) => {
     res.render('sessions/register', {
         title: 'E-commerce | Registrate'
     });
 }
 
 // GET/profile
-const profileView = (req, res) =>{
+const profileView = (req, res) => {
     const user = req.user._doc;
     res.render('sessions/profile', {
         user,
@@ -38,7 +38,7 @@ const profileView = (req, res) =>{
 }
 
 // GET/products
-const productsView = async (req, res) =>{
+const productsView = async (req, res) => {
     try {
         req.query.controller = 'view';
         const user = req.user._doc;
@@ -46,43 +46,43 @@ const productsView = async (req, res) =>{
         products.docs.forEach(element => {
             element.cid = user.cart.toString()
         });
-        res.render('products', { 
-            products, 
+        res.render('products', {
+            products,
             user,
             title: 'E-commerce | Productos'
         })
     } catch (error) {
         res.render('errors/base', {
             error: error.message,
-            title: 'E-commerce | Error',   
+            title: 'E-commerce | Error',
             route: 'login',
-            page: 'log-in'    
+            page: 'log-in'
         })
     }
 }
 
 // GET/failLogin
-const failLoginView = (req, res) =>{
+const failLoginView = (req, res) => {
     res.render('errors/base', {
         error: 'Error al intentar iniciar sesión. Usuario o contraseña incorrecta.',
         title: 'E-commerce | Fallo al iniciar sesión',
         route: 'login',
-        page: 'log-in'   
+        page: 'log-in'
     })
 }
 
 //GET/failRegister
-const failRegisterView = (req, res) =>{
+const failRegisterView = (req, res) => {
     res.render('errors/base', {
         error: 'Error al intentar registrarse, ya existe un usuario con ese email.',
-        title: 'E-commerce | Fallo al registrarse',   
+        title: 'E-commerce | Fallo al registrarse',
         route: 'register',
-        page: 'registro'  
+        page: 'registro'
     })
 }
 
 //GET/carts/:cid
-const getCartView = async (req, res) =>{
+const getCartView = async (req, res) => {
     try {
         const cid = req.params.cid;
         let cart = await cartService.getById(cid);
@@ -91,11 +91,11 @@ const getCartView = async (req, res) =>{
             let pid = cart.products[index].product;
             const product = await productService.getById(pid);
             const productFound = cart.products.find(element => element.product == product._id.toString());
-            if(productFound) product.quantity = productFound.quantity;
+            if (productFound) product.quantity = productFound.quantity;
             product.cid = cid
             products.push(product);
         }
-        res.render('cart', { 
+        res.render('cart', {
             products,
             cid,
             title: 'E-commerce | Mi Carrito'
@@ -103,18 +103,18 @@ const getCartView = async (req, res) =>{
     } catch (error) {
         res.render('errors/base', {
             error: error.message,
-            title: 'E-commerce | Error',   
+            title: 'E-commerce | Error',
             route: 'products',
-            page: 'productos'    
+            page: 'productos'
         })
     }
 }
 
 //GET/panel
-const getPanelView = async (req, res) =>{
+const getPanelView = async (req, res) => {
     try {
         const users = await userService.getAll();
-        res.render('panel', { 
+        res.render('panel', {
             users,
             title: 'E-commerce | Panel de Admin'
         })
@@ -122,14 +122,14 @@ const getPanelView = async (req, res) =>{
         console.log(error)
         res.render('errors/base', {
             error: error.message,
-            title: 'E-commerce | Error',   
+            title: 'E-commerce | Error',
             route: 'products',
-            page: 'productos'    
+            page: 'productos'
         })
     }
 }
 
-export default { 
+export default {
     getHome,
     getChat,
     loginView,

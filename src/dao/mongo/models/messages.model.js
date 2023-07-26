@@ -2,17 +2,17 @@ import mongoose from 'mongoose';
 const messagesCollection = 'messages';
 
 const messagesSchema = new mongoose.Schema({
-    user:{
+    user: {
         type: String,
         requiered: true,
     },
-    email:{
+    email: {
         type: String,
         requiered: true,
     },
-    message:{
+    message: {
         type: String,
-        requiered:true
+        requiered: true
     }
 })
 

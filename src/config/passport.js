@@ -13,15 +13,15 @@ const LocalStrategy = local.Strategy;
 const JWTStrategy = passport_jwt.Strategy;
 const ExtractJWT = passport_jwt.ExtractJwt;
 
-const initializePassport = () =>{
+const initializePassport = () => {
     passport.use('register', new LocalStrategy({
         passReqToCallback: true,
         usernameField: 'email'
-    }, async (req, username, password, done) =>{
+    }, async (req, username, password, done) => {
         try {
             const { first_name, last_name, email, age } = req.body;
-            const user = await userModel.findOne({email: username});
-            if(user) return done(null, false);
+            const user = await userModel.findOne({ email: username });
+            if (user) return done(null, false);
             const cart = await cartModel.create({});
             const newUser = {
                 first_name,
@@ -54,7 +54,7 @@ const initializePassport = () =>{
                     }
                 }
             }
-            if(newUser.email == config.ADMIN_EMAIL && isValidPassword(newUser, config.ADMIN_PASSWORD)) newUser.role = 'admin';
+            if (newUser.email == config.ADMIN_EMAIL && isValidPassword(newUser, config.ADMIN_PASSWORD)) newUser.role = 'admin';
             const result = await userModel.create(newUser);
             return done(null, result);
         } catch (error) {
@@ -64,18 +64,18 @@ const initializePassport = () =>{
 
     passport.use('login', new LocalStrategy({
         usernameField: 'email'
-    }, async(username, password, done) =>{
+    }, async (username, password, done) => {
         try {
-            const user = await userModel.findOne({email: username});
-            if(!user) return done(null, user);
-            if(!isValidPassword(user, password)) return done(null, false);
+            const user = await userModel.findOne({ email: username });
+            if (!user) return done(null, user);
+            if (!isValidPassword(user, password)) return done(null, false);
             user.last_connection = Date.now();
-            await userModel.findOneAndUpdate({email: username}, user);
+            await userModel.findOneAndUpdate({ email: username }, user);
             const token = generateToken(user);
             user.token = token;
             return done(null, user);
         } catch (error) {
-            return done(error);         
+            return done(error);
         }
     }))
 
@@ -83,11 +83,11 @@ const initializePassport = () =>{
         clientID: 'Iv1.9468a729ceb7ea8a',
         clientSecret: 'a3670cd52972d3e520932db97b273d3eeca6448d',
         callbackURL: 'http://localhost:8080/api/sessions/githubcallback'
-    }, async (accessToken, refreshToken, profile, done) =>{
+    }, async (accessToken, refreshToken, profile, done) => {
         try {
-            const user = await userModel.findOne({ email: profile._json.email});
+            const user = await userModel.findOne({ email: profile._json.email });
             console.log(profile)
-            if(user){
+            if (user) {
                 const token = generateToken(user);
                 user.token = token;
                 user.last_connection = Date.now();
@@ -103,28 +103,28 @@ const initializePassport = () =>{
                 cart: cart._id,
                 last_connection: Date.now()
             })
-            const userCreated = await userModel.findOne({ email: newUser.email});
+            const userCreated = await userModel.findOne({ email: newUser.email });
             const token = generateToken(userCreated);
             userCreated.token = token;
             return done(null, userCreated);
         } catch (error) {
             console.log(error)
-            return done(error);    
+            return done(error);
         }
     }))
 
     passport.use('jwt', new JWTStrategy({
         jwtFromRequest: ExtractJWT.fromExtractors([extractCookie]),
         secretOrKey: JWT_PRIVATE_KEY
-    }, async(jwt_payload, done) =>{
+    }, async (jwt_payload, done) => {
         done(null, jwt_payload);
     }))
 
-    passport.serializeUser((user, done) =>{
+    passport.serializeUser((user, done) => {
         done(null, user._id);
     })
 
-    passport.deserializeUser(async (id, done) =>{
+    passport.deserializeUser(async (id, done) => {
         const user = await userModel.findById(id);
         done(null, user);
     })

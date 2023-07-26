@@ -5,16 +5,16 @@ import UserDTO from '../dto/user.dto.js';
 import { userService } from '../../services/index.repository.js';
 
 export default class UsersMongo {
-    constructor(){
+    constructor() {
         this.model = userModel;
     }
 
-    getAll = async (query) =>{
-        if(!query){
+    getAll = async (query) => {
+        if (!query) {
             const users = await this.model.find();
             const result = users.map(element => {
-                const {_id, first_name, last_name, email, role} = element
-                const user = new UserDTO({_id, first_name, last_name, email, role})
+                const { _id, first_name, last_name, email, role } = element
+                const user = new UserDTO({ _id, first_name, last_name, email, role })
                 return user
             });
             return result
@@ -22,9 +22,9 @@ export default class UsersMongo {
         return await this.model.find(query);
     }
 
-    getById = async (uid) =>{
-        const user = await this.model.findOne({_id: uid});
-        if(!user){
+    getById = async (uid) => {
+        const user = await this.model.findOne({ _id: uid });
+        if (!user) {
             CustomError.createError({
                 name: "Reference error",
                 message: "There is no cart with that id",
@@ -34,32 +34,32 @@ export default class UsersMongo {
         return user;
     }
 
-    create = async () =>{
+    create = async () => {
         return await this.model.create({});
     }
 
-    update = async (uid, userToUpdate) =>{
-        return await this.model.findOneAndUpdate({ _id: uid}, userToUpdate, {new: true});
+    update = async (uid, userToUpdate) => {
+        return await this.model.findOneAndUpdate({ _id: uid }, userToUpdate, { new: true });
     }
 
-    delete = async (uid) =>{
-        const user = await this.model.findOne({_id: uid});
-        if(user.role == 'admin'){
+    delete = async (uid) => {
+        const user = await this.model.findOne({ _id: uid });
+        if (user.role == 'admin') {
             CustomError.createError({
                 name: "Unauthorized",
                 message: "No tienes todos los permisos necesarios para hacer esto.",
                 code: EErros.UNAUTHORIZED
-            })  
+            })
         }
         const html = `<h1>Tu cuenta ha sido eliminada</h1><br>
         <p>Hola ${user.first_name}, nos comunicamos contigo para informarte que tu cuenta ha sido eliminada por un administrador.<p>`
         await userService.sendMail(user.email, 'Eliminación de cuenta', html)
-        return await this.model.deleteOne({_id: uid});
-    } 
+        return await this.model.deleteOne({ _id: uid });
+    }
 
-    deleteMany = async() =>{
+    deleteMany = async () => {
         const twoDaysAgo = new Date();
         twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
-        return await this.model.deleteMany({last_connection: { $lt: twoDaysAgo }});
+        return await this.model.deleteMany({ last_connection: { $lt: twoDaysAgo } });
     }
 }

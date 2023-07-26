@@ -2,7 +2,7 @@ import winston from 'winston';
 import config from '../config/config.js';
 
 const customLevels = {
-    levels:{
+    levels: {
         debug: 5,
         http: 4,
         info: 3,
@@ -21,11 +21,11 @@ const customLevels = {
 }
 
 winston.addColors(customLevels.colors);
-const createLogger = (env) =>{
-    if(env == 'PROD'){
+const createLogger = (env) => {
+    if (env == 'PROD') {
         return winston.createLogger({
             levels: customLevels.levels,
-            transports:[
+            transports: [
                 new winston.transports.File({
                     level: 'info',
                     filename: 'errors.log',
@@ -36,7 +36,7 @@ const createLogger = (env) =>{
                 })
             ]
         })
-    } else{
+    } else {
         return winston.createLogger({
             levels: customLevels.levels,
             transports: [

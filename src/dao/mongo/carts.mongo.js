@@ -3,17 +3,17 @@ import CustomError from '../../services/errors/CustomError.js';
 import EErros from '../../services/errors/enums.js';
 
 export default class CartsMongo {
-    constructor(){
+    constructor() {
         this.model = cartModel;
     }
 
-    getAll = async () =>{
+    getAll = async () => {
         return await this.model.find();
     }
 
-    getByIdPopulate = async (cid) =>{
-        const cart = await this.model.find({_id: cid});
-        if(cart.length == 0){
+    getByIdPopulate = async (cid) => {
+        const cart = await this.model.find({ _id: cid });
+        if (cart.length == 0) {
             CustomError.createError({
                 name: "Reference error",
                 message: "There is no cart with that id",
@@ -23,9 +23,9 @@ export default class CartsMongo {
         return cart;
     }
 
-    getById = async (cid) =>{
-        const cart = await this.model.findOne({_id: cid});
-        if(!cart){
+    getById = async (cid) => {
+        const cart = await this.model.findOne({ _id: cid });
+        if (!cart) {
             CustomError.createError({
                 name: "Reference error",
                 message: "There is no cart with that id",
@@ -35,15 +35,15 @@ export default class CartsMongo {
         return cart;
     }
 
-    create = async () =>{
+    create = async () => {
         return await this.model.create({});
     }
 
-    update = async (cid, cartToUpdate) =>{
-        return await this.model.findOneAndUpdate({ _id: cid}, cartToUpdate, {new: true});
+    update = async (cid, cartToUpdate) => {
+        return await this.model.findOneAndUpdate({ _id: cid }, cartToUpdate, { new: true });
     }
 
-    delete = async (cid) =>{
-        return await this.model.deleteOne({_id: cid});
-    } 
+    delete = async (cid) => {
+        return await this.model.deleteOne({ _id: cid });
+    }
 }

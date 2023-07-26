@@ -1,27 +1,27 @@
 import messagesModel from "./models/messages.model.js";
 
 export default class MessagesMongo {
-    constructor(){
+    constructor() {
         this.model = messagesModel;
     }
 
-    getAll = async () =>{
+    getAll = async () => {
         return await this.model.find();
     }
 
-    getById = async (mid) =>{
-        return await this.model.findOne({_id: mid});
+    getById = async (mid) => {
+        return await this.model.findOne({ _id: mid });
     }
 
-    create = async (data) =>{
+    create = async (data) => {
         return await this.model.create(data);
     }
 
-    update = async (mid, data) =>{
-        return await this.model.findOneAndUpdate({ _id: mid}, data, {new: true});
+    update = async (mid, data) => {
+        return await this.model.findOneAndUpdate({ _id: mid }, data, { new: true });
     }
 
-    delete = async (mid) =>{
-        return await this.model.deleteOne({_id: mid});
-    } 
+    delete = async (mid) => {
+        return await this.model.deleteOne({ _id: mid });
+    }
 }

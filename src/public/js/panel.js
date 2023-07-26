@@ -1,6 +1,6 @@
-async function changeRole(uid){
+async function changeRole(uid) {
     const res = await fetch(`/api/users/admin/changeRole/${uid}`, { method: "GET" });
-    if(res.status == 401){
+    if (res.status == 401) {
         return Toastify({
             text: "No puedes hacer eso.",
             style: { background: "#dc3545" },
@@ -10,9 +10,9 @@ async function changeRole(uid){
     location.reload();
 }
 
-async function deleteUser(uid){
+async function deleteUser(uid) {
     const res = await fetch(`/api/users/admin/deleteUser/${uid}`, { method: "DELETE" });
-    if(res.status == 401){
+    if (res.status == 401) {
         return Toastify({
             text: "No puedes hacer eso.",
             style: { background: "#dc3545" },

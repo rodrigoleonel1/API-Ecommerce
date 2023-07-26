@@ -15,11 +15,11 @@ const cartSchema = new mongoose.Schema({
             }
         }],
         default: [],
-        _id: false 
+        _id: false
     }
 })
 
-cartSchema.pre('find', function(){
+cartSchema.pre('find', function () {
     this.populate('products.product');
 })
 const cartModel = mongoose.model(cartCollection, cartSchema);

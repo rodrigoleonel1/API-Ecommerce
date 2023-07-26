@@ -6,7 +6,7 @@
         <a href="/carts/{{user.cart}}" class="btn btn-primary">Mi carrito</a>
         <a href="/chat" class="btn btn-primary">Chat</a>
     </div>
-    <a href="/api/sessions/logout" class="btn btn-primary">Logout</a>  
+    <a href="/api/sessions/logout" class="btn btn-primary">Logout</a>
 </div>
 <div class="container-fluid d-flex justify-content-center align-items-center bg-black text-white p-3 mb-4">
     <h1>Chat E-Commerce</h1>
@@ -19,10 +19,12 @@
     </div>
     <div style="width: 800px;" class="input-group">
         <span class="input-group-text gap-1" id="basic-addon1">
-            <img id='chatAvatar'style="border-radius: 50%; height: 25px; object-fit: cover;" src="/img/profile.jpg" alt="chat-avatar">
+            <img id='chatAvatar' style="border-radius: 50%; height: 25px; object-fit: cover;" src="/img/profile.jpg"
+                alt="chat-avatar">
             <div id="userName">{{user.first_name}}</div>
         </span>
-        <input id="chatBox" type="text" class="form-control" placeholder="Escriba un mensaje..." aria-label="Message" aria-describedby="basic-addon1">
+        <input id="chatBox" type="text" class="form-control" placeholder="Escriba un mensaje..." aria-label="Message"
+            aria-describedby="basic-addon1">
         <button class="btn btn-primary" type="button" id="sendMsgBtn">Enviar</button>
     </div>
 </div>

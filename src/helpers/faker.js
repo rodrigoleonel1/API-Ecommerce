@@ -1,6 +1,6 @@
 import { fakerES as faker } from '@faker-js/faker';
 
-export const generateProducts = () =>{
+export const generateProducts = () => {
     return {
         id: faker.database.mongodbObjectId(),
         title: faker.commerce.productName(),

@@ -12,14 +12,14 @@ const userSchema = new mongoose.Schema({
         default: 'user'
     },
     cart: [
-        { 
-            type: mongoose.Schema.Types.ObjectId, 
+        {
+            type: mongoose.Schema.Types.ObjectId,
             ref: 'carts'
         }
     ],
-    last_connection: { 
-        type: Date, 
-        required: true 
+    last_connection: {
+        type: Date,
+        required: true
     },
     documents: {
         type: Object,
